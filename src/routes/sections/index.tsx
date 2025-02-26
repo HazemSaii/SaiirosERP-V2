@@ -1,3 +1,4 @@
+
 import type { RouteObject } from 'react-router';
 
 import { lazy, Suspense } from 'react';
@@ -8,6 +9,7 @@ import { SplashScreen } from 'src/components/loading-screen';
 
 import { authRoutes } from './auth';
 import { mainRoutes } from './main';
+import { humanResourseRoutes } from './hr';
 import { authDemoRoutes } from './auth-demo';
 import { dashboardRoutes } from './dashboard';
 import { componentsRoutes } from './components';
@@ -55,6 +57,7 @@ export const routesSection: RouteObject[] = [
 
   // Components
   ...componentsRoutes,
+  ...humanResourseRoutes,
 
   // No match
   { path: '*', element: <Page404 /> },
