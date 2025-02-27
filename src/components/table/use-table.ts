@@ -39,7 +39,7 @@ export type UseTableProps = {
 };
 
 export function useTable(props?: UseTableProps): UseTableReturn {
-  const [dense, setDense] = useState(!!props?.defaultDense);
+  const [dense, setDense] = useState<boolean>(!!props?.defaultDense||true);
 
   const [page, setPage] = useState(props?.defaultCurrentPage ?? 0);
 

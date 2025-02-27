@@ -1,14 +1,13 @@
 import type { NavSectionProps } from 'src/components/nav-section';
 
-import { paths } from 'src/routes/paths';
+import { useMemo } from 'react';
 
 import { CONFIG } from 'src/global-config';
 import { useTranslate } from 'src/locales';
 import { useGetMenus } from 'src/actions/shared/shared';
-import { Label } from 'src/components/label';
+
 import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
-import { useMemo } from 'react';
 
 // ----------------------------------------------------------------------
 

@@ -75,7 +75,7 @@ export const allLangs = [
     },
   },
 ];
-
+export const defaultLang = allLangs[0]; // English
 /**
  * Country code:
  * https://flagcdn.com/en/codes.json

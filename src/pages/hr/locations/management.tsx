@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-// import { LocationsManagementView } from 'src/sections/hr/locations/view';
+import { LocationsManagementView } from 'src/sections/hr/locations/view';
 
 
 // ----------------------------------------------------------------------
@@ -12,7 +12,7 @@ export default function LocationsManagementPage() {
         <title> Locations Management</title>
     </Helmet>
     
-    {/* <LocationsManagementView /> */}
+    <LocationsManagementView />
     </>
 
   );

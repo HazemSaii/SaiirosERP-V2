@@ -2,15 +2,24 @@ import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { localStorageGetItem } from 'src/utils/storage-available';
+
 import { toast } from 'src/components/snackbar';
 
-import { allLangs } from './all-langs';
+import { allLangs,defaultLang } from './all-langs';
 import { fallbackLng, changeLangMessages as messages } from './locales-config';
 
 import type { LanguageValue } from './locales-config';
 
 // ----------------------------------------------------------------------
-
+export function useLocales() {
+  const langStorage = localStorageGetItem('i18nextLng');
+  const currentLang = allLangs.find((lang) => lang.value === langStorage) || defaultLang;
+  return {
+    allLangs,
+    currentLang,
+  };
+}
 export function useTranslate(ns?: string) {
   const { t, i18n } = useTranslation(ns);
 
