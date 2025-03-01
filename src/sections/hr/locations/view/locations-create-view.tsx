@@ -163,18 +163,19 @@ export default function LocationsCreateView() {
           <Tab key={tab.value} label={tab.label} icon={tab.icon} value={tab.value} />
         ))}
       </Tabs>
-      {currentTab === 'location-info' &&
-        (countriesLoading || !countries ? (
-          <FormSkeleton fields={10} />
-        ) : (
-          <LocationNewEditForm
-            ref={locationInfoForm}
-            currentLocation={currentLocationInfo || undefined}
-            operation="create"
-            countries={countries}
-            countriesLoading={countriesLoading}
-          />
-        ))}
+      {currentTab === 'location-info'  ?
+      (
+        <LocationNewEditForm
+          ref={locationInfoForm}
+          currentLocation={currentLocationInfo || undefined}
+          operation="create"
+          countries={countries}
+          countriesLoading={countriesLoading}
+        />
+      )
+      : 
+      <FormSkeleton fields={10} />
+      }
     </Container>
   );
 }

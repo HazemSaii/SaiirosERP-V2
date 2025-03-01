@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-// import JobesFamiliesEditView from 'src/sections/hr/job families/view/jobFamilies-edit-view';
+import JobesFamiliesEditView from 'src/sections/hr/job families/view/jobFamilies-edit-view';
 
 export default function JobFamiliesEditPage(){
     const params = useParams();
@@ -16,7 +16,7 @@ export default function JobFamiliesEditPage(){
         <title> Jobs Families Edit</title>
        </Helmet>
 
-       {/* <JobesFamiliesEditView id={`${id}`}/> */}
+       <JobesFamiliesEditView id={`${id}`}/>
         
         </>
     )

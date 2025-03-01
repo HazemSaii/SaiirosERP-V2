@@ -1,5 +1,3 @@
-import type { ILocationsItem } from 'src/types/locations';
-
 import { useBoolean, usePopover } from 'minimal-shared/hooks';
 
 import { Button } from '@mui/material';
@@ -22,21 +20,14 @@ import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
 
 type Props = {
   onEditRow: VoidFunction;
-  row: ILocationsItem;
+  row: any;
   onDeleteRow: VoidFunction;
   deleteLoading: boolean;
 };
 
-export default function LocationTableRow({ row, onEditRow, onDeleteRow, deleteLoading }: Props) {
-  const {
-    locationName,
-    avatarUrl,
-    countryName,
-    approvalStatus,
-    active,
-    approvalStatusColor,
-    activeColor,
-  } = row;
+export default function JobFamiliesTableRow({ row, onEditRow, onDeleteRow, deleteLoading }: Props) {
+  const { jobFamilyName, avatarUrl, active, approvalStatus, approvalStatusColor ,activeDesc} = row;
+
   const { t } = useTranslate();
   const confirmDialog = useBoolean();
   const popover = usePopover();
@@ -114,26 +105,27 @@ export default function LocationTableRow({ row, onEditRow, onDeleteRow, deleteLo
     <>
       <TableRow hover>
         <TableCell
-          sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} // Added cursor: 'pointer'
+          sx={{ display: 'flex', alignItems: 'center' ,cursor: 'pointer'}}
           onClick={() => {
             onEditRow();
           }}
         >
-          <Avatar alt={locationName} src={`${IMAGE_BASE}/${avatarUrl}`} sx={{ mr: 2 }} />
-          <ListItemText primary={locationName} primaryTypographyProps={{ typography: 'body2' }} />
+          <Avatar alt={jobFamilyName} src={`${IMAGE_BASE}/${avatarUrl}`} sx={{ mr: 2 }} />
+          <ListItemText primary={jobFamilyName} primaryTypographyProps={{ typography: 'body2' }} />
         </TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}> {countryName}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-          <Label variant="soft" color={approvalStatusColor || 'default'}>
+        <TableCell>
+          <Label variant="soft" color={approvalStatusColor}>
             {approvalStatus}
           </Label>
         </TableCell>
 
         <TableCell>
-          <Label variant="soft" color={activeColor || 'default'}>
-            {active}
+          <Label
+            variant="soft"
+            color={(active === 1 && 'success') || (active === 0 && 'error') || 'default'}
+          >
+            {activeDesc}
           </Label>
         </TableCell>
 
@@ -143,10 +135,10 @@ export default function LocationTableRow({ row, onEditRow, onDeleteRow, deleteLo
           </IconButton>
         </TableCell>
       </TableRow>
-
       {renderRecordInfoActions()}
       {renderMenuActions()}
       {renderConfirmDialog()}
+     
     </>
   );
 }

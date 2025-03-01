@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetJobFamilies(currentLang:string) {
+export function UseGetJobFamilies(currentLang:string) {
     const config = {
       headers: {
          'Lang': currentLang.toUpperCase(),
@@ -29,7 +29,7 @@ export function useGetJobFamilies(currentLang:string) {
       );
       return memoizedValue;
 }
-export function useGetApprovedJobFamilies(currentLang:string) {
+export function UseGetApprovedJobFamilies(currentLang:string) {
   const config = {
     headers: {
        'Lang': currentLang.toUpperCase(),
@@ -53,7 +53,7 @@ export function useGetApprovedJobFamilies(currentLang:string) {
     return memoizedValue;
 }
 
-export function useGetJobFamilie(id: number) {
+export function UseGetJobFamilie(id: number) {
   
   const URL = id ? [endpoints.jobFamilies.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
@@ -76,17 +76,17 @@ export function useGetJobFamilie(id: number) {
   
 }
 
-export function useDeleteJobFamilies(id: string){
+export function UseDeleteJobFamilies(id: string){
   const res = axiosInstance.delete(endpoints.jobFamilies.delete, { params: { id } });
    return res;
 }
 
-export function useAddJobFamilies(data: any) {
+export function UseAddJobFamilies(data: any) {
   const res = axiosInstance.post(endpoints.jobFamilies.create, data);
   return res;
 }
 
-export function useEditJobFamilies(id: any) {
+export function UseEditJobFamilies(id: any) {
   const res = axiosInstance.post(endpoints.jobFamilies.edit, id);
   return res;
 }

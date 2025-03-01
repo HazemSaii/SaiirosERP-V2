@@ -33,7 +33,7 @@ type Props = {
 };
 
 const useFetchLocationData = (locationId: any) => {
-  const [locationData, setLocationData] = useState<ILocationsInfo | null>(null);
+  const [locationData, setLocationData] = useState<ILocationsInfo>();
   const [loading, setLoading] = useState<any>(true);
   const { location, locationValidating, refetch: refetchLocation } = useGetLocation(locationId);
   const refetch = useCallback(() => {
@@ -53,16 +53,11 @@ export default function LocationsEditView({ locationId }: Props) {
   const { t } = useTranslate();
   const { currentLang } = useLocales();
   const currentLanguage = currentLang.value;
-  console.log("currentLanguage",currentLanguage);
-  
+  console.log('currentLanguage', currentLanguage);
+
   const router = useRouter();
   const { locationData, loading, refetch } = useFetchLocationData(locationId);
   const { countries, countriesLoading } = useGetAllCountries(currentLanguage);
-  // const uniqueCountries = countries.filter((country:any, index:any, self:any) =>
-  //   index === self.findIndex((c:any) => (
-  //     c.countryCode === country.countryCode && c.langCode === country.langCode
-  //   ))
-  // );
 
   const TABS = [
     {
@@ -72,7 +67,7 @@ export default function LocationsEditView({ locationId }: Props) {
     },
   ];
 
-  const [currentLocationInfo, setcurrentLocationInfo] = useState<ILocationsInfo | null>();
+  const [currentLocationInfo, setcurrentLocationInfo] = useState<ILocationsInfo>();
   const [submitLoading, setSubmitLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState('location-info');
 
@@ -141,7 +136,7 @@ export default function LocationsEditView({ locationId }: Props) {
           refetch();
           toast.success(t('Edited successfully!'));
           router.push(paths.hr.locations.management);
-          setcurrentLocationInfo(null);
+          // setcurrentLocationInfo(null);
         }
       } catch (error: any) {
         setSubmitLoading(false);
@@ -156,7 +151,7 @@ export default function LocationsEditView({ locationId }: Props) {
       setcurrentLocationInfo(locationData);
     }
     return () => {
-      setcurrentLocationInfo(null);
+      // setcurrentLocationInfo(null);
     };
   }, [loading, locationData]);
   //--------------
@@ -174,15 +169,11 @@ export default function LocationsEditView({ locationId }: Props) {
   // }
 
   //--------------
-  // Define the static array for language codes
-  const langCodes = ['AR', 'EN'];
-
-  // Determine the appropriate langCode based on the desired logic
-  const langCode = langCodes.includes(currentLang.value) ? currentLang.value : 'AR'; // Default to 'AR' if not found
 
   // Get the organization name based on the determined langCode
   const LocationName =
-    locationData?.locationTlDTOS?.find((org) => org.langCode === langCode)?.locationName || '';
+    locationData?.locationTlDTOS?.find((org) => org.langCode === currentLang.value.toUpperCase())
+      ?.locationName || '';
   return (
     <Container maxWidth="lg">
       <CustomBreadcrumbs
@@ -237,9 +228,7 @@ export default function LocationsEditView({ locationId }: Props) {
         ))}
       </Tabs>
       {currentTab === 'location-info' &&
-        (loading || !currentLocationInfo || countriesLoading || !countries ? (
-          <FormSkeleton fields={10} />
-        ) : (
+        (!loading && currentLocationInfo ? (
           <LocationNewEditForm
             ref={locationsInfoForm}
             currentLocation={currentLocationInfo}
@@ -247,6 +236,8 @@ export default function LocationsEditView({ locationId }: Props) {
             countries={countries}
             countriesLoading={countriesLoading}
           />
+        ) : (
+          <FormSkeleton fields={10} />
         ))}
     </Container>
   );
