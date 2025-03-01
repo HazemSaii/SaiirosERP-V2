@@ -49,18 +49,8 @@ export const endpoints = {
     details: '/api/product/details',
     search: '/api/product/search',
   },
-  shared: {
-    getAllLanguages: '/languages/getAllLanguages',
-    getAllTimeZones: '/timezones/getAllTimezones?pageNo=1&pageSize=1000000',
-    // getAllLookup:'/listOfValues/getAllLookup',
-    // getAllApplications: '/applications/getAllApplications',
-    // getAllDuties: '/duties/getAllDuties?pageNo=1&pageSize=1000000',
-    // getAllCountries: '/countries/getAllCountries',
-    // getAllCurrencies:'/currencies/getAllCurrencies',
-    getMenues: '/menu/findAllMenusSplit',
-  },
   user: {
-    list: '/user/getAllUser?pageNo=1&pageSize=1000',
+    list: '/user/getAllUser?pageNo=1&pageSize=1000000&orderBy=userName&asc=true',
     details: '/user/getUser',
     create: '/user/addUser',
     validate: '/user/validateUser',
@@ -92,28 +82,44 @@ export const endpoints = {
     create: '/person/addPerson',
     correct: '/person/editPerson',
     update: '/person/updatePerson',
-    Approved: '/person/getAllPersonsByApprovalStatus?pageNo=1&pageSize=1000000',
+    Approved:
+      '/person/getAllPersonsByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=firstName&asc=true',
   },
-
+  shared: {
+    getAllLanguages: '/languages/getAllLanguages',
+    getAllTimeZones:
+      '/timezones/getAllTimezones?pageNo=1&pageSize=1000000&orderBy=timezoneName&asc=true',
+    legalEntities:
+      '/shared/getAllLegalEntities?pageNo=1&pageSize=1000000&orderBy=legalEntityName&asc=true',
+    businessUnites:
+      '/shared/getAllBusinessUnits?pageNo=1&pageSize=1000000&orderBy=businessUnitName&asc=true',
+    payrolls: '/shared/getAllPayrolls?pageNo=1&pageSize=1000000&orderBy=payrollName&asc=true',
+    // getAllLookup:'/listOfValues/getAllLookup',
+    // getAllApplications: '/applications/getAllApplications',
+    // getAllDuties: '/duties/getAllDuties?pageNo=1&pageSize=1000000',
+    // getAllCountries: '/countries/getAllCountries',
+    // getAllCurrencies:'/currencies/getAllCurrencies',
+    getMenues: '/menu/findAllMenusSplit',
+  },
   resetPassword: {
     updatePasswordPolicy: '/resetPassword/updatePasswordPolicy',
     getPasswordPolicy: '/resetPassword/getPasswordPolicy',
   },
   Processes: {
-    list: '/processes/getAllProcess?pageNo=1&pageSize=1000',
+    list: '/processes/getAllProcess?pageNo=1&pageSize=1000000&orderBy=processName&asc=true',
     shortList: '/processes/getAllProcessList',
     details: '/processes/getProcess',
     edit: '/processes/editProcess',
   },
   approvalGroups: {
-    list: '/approverGroup/getAllApprovers',
+    list: '/approverGroup/getAllApprovers?pageNo=1&pageSize=1000000&orderBy=groupName&asc=true',
     edit: '/approverGroup/editApproverGroup',
     create: '/approverGroup/addApproverGroup',
     delete: '/approverGroup/deleteApproverGroup',
     details: '/approverGroup/getApproverGroup',
   },
   rules: {
-    list: '/rules/getAllRules?pageNo=1&pageSize=1000',
+    list: '/rules/getAllRules?pageNo=1&pageSize=1000000&orderBy=ruleName&asc=true',
     create: '/rules/addWfRule',
     details: '/rules/getRule',
     edit: '/rules/editWfRule',
@@ -124,86 +130,89 @@ export const endpoints = {
     manageRuleApprovers: '/rules/mangeRuleApprover',
   },
   transaction: {
-    list: '/transactions/getTransactions',
+    list: 'transactions/getTransactions?pageNo=1&pageSize=1000000&orderBy=processCode&asc=true',
     details: '/transactions/getTransaction',
   },
   delegations: {
-    list: '/Delegation/getAllDelegation?pageNo=1&pageSize=1000',
+    list: '/Delegation/getAllDelegation?pageNo=1&pageSize=1000000&orderBy=fromUserName&asc=true',
     details: '/Delegation/getDelegation',
     create: '/Delegation/addDelegation',
     edit: '/Delegation/editDelegation',
     delete: '/Delegation/deleteDelegation',
   },
   jobFamilies: {
-    list: '/jobFamilies/getALLJobFamilies',
+    list: '/jobFamilies/getALLJobFamilies?pageNo=1&pageSize=1000000&orderBy=jobFamilyName&asc=true',
     details: '/jobFamilies/getJobFamily',
     create: '/jobFamilies/addJobFamily',
     edit: '/jobFamilies/editJobFamily',
     delete: '/jobFamilies/deleteJobFamily',
     Approved:
-      '/jobFamilies/getAllJobFamiliesByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+      '/jobFamilies/getAllJobFamiliesByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=jobFamilyName&asc=true&approvalStatus=APPROVED',
   },
   jobs: {
-    list: '/job/getAllJobs',
+    list: '/job/getAllJobs?pageNo=1&pageSize=1000000&orderBy=jobName&asc=true',
     details: '/job/getJob',
     create: '/job/addJob',
     edit: '/job/editJob',
     delete: '/job/deleteJob',
-    Approved: '/job/getAllJobsByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+    Approved:
+      '/job/getAllJobsByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=jobName&asc=true&approvalStatus=APPROVED',
   },
   Grades: {
-    list: '/grades/getAllGrades?pageNo=1&pageSize=1000000',
+    list: '/grades/getAllGrades?pageNo=1&pageSize=1000000&orderBy=gradeName&asc=true',
     details: '/grades/getGrade',
     create: '/grades/addGrade',
     edit: '/grades/editGrade',
     delete: '/grades/deleteGrade',
     Approved:
-      '/grades/getAllGradesByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+      '/grades/getAllGradesByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=gradeName&asc=true&approvalStatus=APPROVED',
   },
   location: {
-    list: '/location/getAllLocations?pageNo=1&pageSize=1000000',
+    list: '/location/getAllLocations?pageNo=1&pageSize=1000000&orderBy=locationName&asc=true',
     details: '/location/getLocation',
     create: '/location/addLocation',
     edit: '/location/editLocation',
     delete: '/location/deleteLocation',
     validate: '/location/validateLocation',
-    Approved: '/location/getAllLocationByApprovalStatus?pageNo=1&pageSize=1000000',
+    Approved:
+      '/location/getAllLocationByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=locationName&asc=true',
   },
   organization: {
-    list: '/organization/getAllOrganization?pageNo=1&pageSize=1000000',
+    list: '/organization/getAllOrganization?pageNo=1&pageSize=1000000&orderBy=organizationName&asc=true',
     details: '/organization/getOrganization',
     create: '/organization/addOrganization',
     edit: '/organization/editOrganization',
     delete: '/organization/deleteOrganization',
     Approved:
-      '/organization/getAllOrganizationsByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+      '/organization/getAllOrganizationsByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=organizationName&asc=true&approvalStatus=APPROVED',
   },
   positions: {
-    list: '/positions/getAllPosition?pageNo=1&pageSize=1000000',
+    list: '/positions/getAllPosition?pageNo=1&pageSize=1000000&orderBy=positionName&asc=true',
     details: '/positions/getPosition',
     create: '/positions/addPosition',
     edit: '/positions/editPosition',
     delete: '/positions/deletePosition',
     Approved:
-      '/positions/getAllPositionsByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+      '/positions/getAllPositionsByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=positionName&asc=true&approvalStatus=APPROVED',
   },
   gradeRates: {
-    list: '/gradeRates/getAllGradeRates?pageNo=1&pageSize=1000000',
+    list: '/gradeRates/getAllGradeRates?pageNo=1&pageSize=1000000&orderBy=gradeRateName&asc=true',
     details: '/gradeRates/getGradeRate',
     create: '/gradeRates/addGradeRate',
     edit: '/gradeRates/editGradeRate',
     delete: '/gradeRates/deleteGradeRate',
-    Approved: '/gradeRates/getAllGradeRatesByApprovalStatus?pageNo=1&pageSize=1000000',
+    Approved:
+      '/gradeRates/getAllGradeRatesByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=gradeRateName&asc=true',
   },
   countries: {
-    list: '/countries/getAllCountries?pageNo=1&pageSize=1000000',
+    list: '/countries/getAllCountries?pageNo=1&pageSize=1000000&orderBy=countryName&asc=true',
     details: '/countries/getCountry',
     create: '/countries/addCountry',
     edit: '/countries/editCountry',
     delete: '/countries/deleteCountry',
   },
   currencies: {
-    list: '/currencies/getAllCurrencies?pageNCountrieso=1&pageSize=1000000',
+    list: '/currencies/getAllCurrencies?pageNo=1&pageSize=1000000&orderBy=currencyName&asc=true',
     details: '/currencies/getCurrency',
     create: '/currencies/addCurrency',
     edit: '/currencies/editCurrency',
@@ -218,20 +227,20 @@ export const endpoints = {
     delete: '/listOfValues/deleteLov',
   },
   duties: {
-    list: '/duties/getAllDuties?pageNo=1&pageSize=1000000',
+    list: '/duties/getAllDuties?pageNo=1&pageSize=1000000&orderBy=dutyName&asc=true',
     details: '/duties/getDuty',
     create: '/duties/addDuty',
     edit: '/duties/editDuty',
     delete: '/duties/deleteDuty',
   },
   userDuties: {
-    list: '/userDuties/getAllUserDuties?pageNo=1&pageSize=10',
+    list: '/userDuties/getAllUserDuties?pageNo=1&pageSize=1000000&orderBy=userName&asc=true',
     details: '/userDuties/getUserDuty',
     create: '/userDuties/addUserDuty',
     edit: '/userDuties/editUserDuty',
     delete: '/userDuties/deleteUserDuty',
     Approved:
-      '/userDuties/getAllUserDutiesByApprovalStatus?pageNo=1&pageSize=1000000&approvalStatus=APPROVED',
+      '/userDuties/getAllUserDutiesByApprovalStatus?pageNo=1&pageSize=1000000&orderBy=userName&asc=true&approvalStatus=APPROVED',
   },
   languages: {
     list: '/languages/getAllLanguages',
@@ -247,19 +256,7 @@ export const endpoints = {
     delete: '/timezones/deleteTimezone',
   },
   applications: {
-    list: '/applications/getAllApplications',
-  },
-  locations: {
-    list: '/location/getAllLocations?pageNo=1&pageSize=1000000',
-  },
-  legalEntities: {
-    list: '/shared/getAllLegalEntities',
-  },
-  businessUnites: {
-    list: '/shared/getAllBusinessUnits',
-  },
-  payrolls: {
-    list: '/shared/getAllPayrolls',
+    list: '/applications/getAllApplications?pageNo=1&pageSize=1000000&orderBy=applicationName&asc=true',
   },
   contract: {
     terminateContract: '/contract/terminateContract',
@@ -277,5 +274,14 @@ export const endpoints = {
     updateHistory: '/history/updateHistory',
     correctHistory: '/history/editHistory',
     getContractHistoriesByPersonId: '/history/getContractHistoriesByPersonId',
+  },
+  suppliers: {
+    list: '/suppliers/getAllSuppliers',
+  },
+  ledgers: {
+    list: '/ledgers/getAllLedgers',
+  },
+  accounts: {
+    list: '/accounts/getAllAccounts',
   },
 };

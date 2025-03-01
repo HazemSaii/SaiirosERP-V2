@@ -1,9 +1,12 @@
 import type { SWRConfiguration } from 'swr';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import { fetcher, endpoints } from '../../lib/axios';
-import { ILookupItem, IApplicationItem } from '../../types/shared';
-import { ITimeZoneItem } from '../../types/timezones';
+
+import type { ITimeZoneItem } from '../../types/timezones';
+import type { ILookupItem, IApplicationItem } from '../../types/shared';
 
 const swrOptions: SWRConfiguration = {
   revalidateIfStale: false,
@@ -58,9 +61,14 @@ export function useGetAllDuties() {
   );
   return memoizedValue;
 }
-export function useGetAllTimezones() {
+export function useGetAllTimezones(currentLang: string) {
+  const config = {
+    headers: {
+      Lang: currentLang.toUpperCase(),
+    },
+  };
   const URL = endpoints.shared.getAllTimeZones;
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, swrOptions);
+  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
   const memoizedValue = useMemo(
     () => ({
       timeZones: data?.content as ITimeZoneItem[],
@@ -96,7 +104,11 @@ export function useGetAllLookups(typeCode: string, currentLang: string) {
 
 export function useGetAllLanguages() {
   const URL = endpoints.shared.getAllLanguages;
-  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, swrOptions);
+  const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
   const memoizedValue = useMemo(
     () => ({
       languages: data as any[],
@@ -154,8 +166,12 @@ export function useGetAllLocations(currentLang: string) {
       Lang: currentLang.toUpperCase(),
     },
   };
-  const URL = endpoints.locations.list;
-  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
+  const URL = endpoints.location.list;
+  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, {
+    revalidateIfStale: true,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
   const memoizedValue = useMemo(
     () => ({
       locations: data?.content || [],
@@ -174,7 +190,7 @@ export function useGetAllLegalEnitites(currentLang: string) {
       Lang: currentLang.toUpperCase(),
     },
   };
-  const URL = endpoints.legalEntities.list;
+  const URL = endpoints.shared.legalEntities;
   const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
   const memoizedValue = useMemo(
     () => ({
@@ -194,7 +210,7 @@ export function useGetAllBusinessUnites(currentLang: string) {
       Lang: currentLang.toUpperCase(),
     },
   };
-  const URL = endpoints.businessUnites.list;
+  const URL = endpoints.shared.businessUnites;
   const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
   const memoizedValue = useMemo(
     () => ({
@@ -214,7 +230,7 @@ export function useGetAllPayrolls(currentLang: string) {
       Lang: currentLang.toUpperCase(),
     },
   };
-  const URL = endpoints.payrolls.list;
+  const URL = endpoints.shared.payrolls;
   const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
   const memoizedValue = useMemo(
     () => ({
@@ -224,6 +240,63 @@ export function useGetAllPayrolls(currentLang: string) {
       payrollsValidating: isValidating,
     }),
     [data?.content, error, isLoading, isValidating]
+  );
+  return memoizedValue;
+}
+export function useGetAllSuppliers(currentLang: string) {
+  const config = {
+    headers: {
+      Lang: currentLang.toUpperCase(),
+    },
+  };
+  const URL = endpoints.suppliers.list;
+  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
+  const memoizedValue = useMemo(
+    () => ({
+      suppliers: data ?? [],
+      suppliersLoading: isLoading,
+      suppliersError: error,
+      suppliersValidating: isValidating,
+    }),
+    [data, error, isLoading, isValidating]
+  );
+  return memoizedValue;
+}
+export function useGetAllLedgers(currentLang: string) {
+  const config = {
+    headers: {
+      Lang: currentLang.toUpperCase(),
+    },
+  };
+  const URL = endpoints.ledgers.list;
+  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
+  const memoizedValue = useMemo(
+    () => ({
+      ledgers: data ?? [],
+      ledgersLoading: isLoading,
+      ledgersError: error,
+      ledgersValidating: isValidating,
+    }),
+    [data, error, isLoading, isValidating]
+  );
+  return memoizedValue;
+}
+export function useGetAllAccounts(currentLang: string) {
+  const config = {
+    headers: {
+      Lang: currentLang.toUpperCase(),
+    },
+  };
+  const URL = endpoints.accounts.list;
+  const { data, isLoading, error, isValidating } = useSWR([URL, config], fetcher, swrOptions);
+  const memoizedValue = useMemo(
+    () => ({
+      accounts: data ?? [],
+      accountsLoading: isLoading,
+      accountsError: error,
+      accountsValidating: isValidating,
+    }),
+    [data, error, isLoading, isValidating]
   );
   return memoizedValue;
 }

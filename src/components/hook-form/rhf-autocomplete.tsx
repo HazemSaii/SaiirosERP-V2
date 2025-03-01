@@ -15,6 +15,7 @@ export type AutocompleteBaseProps = Omit<
 
 export type RHFAutocompleteProps = AutocompleteBaseProps & {
   name: string;
+  required?: any;
   label?: string;
   placeholder?: string;
   helperText?: React.ReactNode;
@@ -29,6 +30,7 @@ export function RHFAutocomplete({
   slotProps,
   helperText,
   placeholder,
+  required,
   ...other
 }: RHFAutocompleteProps) {
   const { control, setValue } = useFormContext();
@@ -39,6 +41,7 @@ export function RHFAutocomplete({
     <Controller
       name={name}
       control={control}
+      
       render={({ field, fieldState: { error } }) => (
         <Autocomplete
           {...field}
@@ -46,6 +49,7 @@ export function RHFAutocomplete({
           onChange={(event, newValue) => setValue(name, newValue, { shouldValidate: true })}
           renderInput={(params) => (
             <TextField
+            required={required}
               {...params}
               {...textfield}
               label={label}

@@ -1,0 +1,152 @@
+export type IUserDutiesTableFilters = {
+    userName: string,
+    active: string,
+    };
+    
+    export type IUserDutiesItem = {
+        avatarUrl: string;
+        createdBy: string;
+        updatedDate: string;
+        createdDate: string;
+        updatedBy: string;
+        userName:string;
+        id: string;
+        userDutyId: string;
+        dutyName: string;
+        langCode: string;
+        active: number;
+        builtIn: number;
+        userId: {
+        createdBy: number;
+        createdDate: string;
+        updatedBy: number | null;
+        updatedDate: string | null;
+        createdByUserName: string;
+        updatedByUserName: string | null;
+        id: number;
+        userName: string;
+        userPassword: string;
+        personId: number | null;
+        supplierId: number | null;
+        userEmail: string;
+        startDate: string;
+        endDate: string | null;
+        locked: number;
+        builtIn: number;
+        numberOfAttempt: number;
+        lastAttempted: string;
+        loggerEnabled: number;
+        defaultLangCode: string;
+        defaultDateFormat: string;
+        defaultTimezoneId: number | null;
+        startPage: number;
+        receiveEmail: number;
+        mustChangePassword: number;
+        passwordExpireDate: string;
+        };
+        dutyCode: {
+        createdBy: number;
+        createdDate: string;
+        updatedBy: number;
+        updatedDate: string;
+        createdByUserName: string;
+        updatedByUserName: string;
+        dutyCode: string;
+        builtIn: number;
+        active: number;
+        };
+        dutyDescription: string;
+        dateFrom: string;
+        dateTo: string;
+        businessUnitId: number;
+        legalEntityId: number;
+        countryCode: string;
+        departmentId: number;
+        locationId: number;
+        jobFamilyId: number;
+        jobId: number;
+        positionId: number;
+        gradeId: number;
+        payrollId: number;
+        hierarchyType: string;
+        topHierarchyValue: number;
+        includeTopValue: number;
+        noOfLevels: number;
+        uniqueId: string | null;
+        approvalStatus: string;
+      };
+      
+      export type IUserDutiesInfo = {
+        avatarUrl: string;
+        createdBy: string;
+        updatedAt: string;
+        createdAt: string;
+        updatedBy: string;
+        id: string;
+        userDutyId: string;
+        dutyName: string;
+        langCode: string;
+        active: number;
+        builtIn: number;
+        userId: {
+        createdBy: number;
+        createdDate: string;
+        updatedBy: number | null;
+        updatedDate: string | null;
+        createdByUserName: string;
+        updatedByUserName: string | null;
+        id: number;
+        userName: string;
+        userPassword: string;
+        personId: number | null;
+        supplierId: number | null;
+        userEmail: string;
+        startDate: string;
+        endDate: string | null;
+        locked: number;
+        builtIn: number;
+        numberOfAttempt: number;
+        lastAttempted: string;
+        loggerEnabled: number;
+        defaultLangCode: string;
+        defaultDateFormat: string;
+        defaultTimezoneId: number | null;
+        startPage: number;
+        receiveEmail: number;
+        mustChangePassword: number;
+        passwordExpireDate: string;
+        };
+        dutyCode: {
+        createdBy: number;
+        createdDate: string;
+        updatedBy: number;
+        updatedDate: string;
+        createdByUserName: string;
+        updatedByUserName: string;
+        dutyCode: string;
+        builtIn: number;
+        active: number;
+        };
+        dutyDescription: string;
+        dateFrom: string;
+        dateTo: string;
+        businessUnitId: number;
+        legalEntityId: number;
+        countryCode: string;
+        departmentId: number;
+        locationId: number;
+        jobFamilyId: number;
+        jobId: number;
+        positionId: number;
+        gradeId: number;
+        payrollId: number;
+        hierarchyType: string;
+        topHierarchyValue: number;
+        includeTopValue: number;
+        noOfLevels: number;
+        uniqueId: string | null;
+        approvalStatus: string;
+      }
+    
+    export type IDutyFilterValue = string | string[];
+    
