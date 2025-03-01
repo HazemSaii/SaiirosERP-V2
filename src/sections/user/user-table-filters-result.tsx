@@ -20,23 +20,13 @@ export function UserTableFiltersResult({ filters, onResetPage, totalResults, sx 
 
   const handleRemoveKeyword = useCallback(() => {
     onResetPage();
-    updateFilters({ name: '' });
+    updateFilters({ userName: '' });
   }, [onResetPage, updateFilters]);
 
   const handleRemoveStatus = useCallback(() => {
     onResetPage();
     updateFilters({ status: 'all' });
   }, [onResetPage, updateFilters]);
-
-  const handleRemoveRole = useCallback(
-    (inputValue: string) => {
-      const newValue = currentFilters.role.filter((item) => item !== inputValue);
-
-      onResetPage();
-      updateFilters({ role: newValue });
-    },
-    [onResetPage, updateFilters, currentFilters.role]
-  );
 
   const handleReset = useCallback(() => {
     onResetPage();
@@ -54,14 +44,8 @@ export function UserTableFiltersResult({ filters, onResetPage, totalResults, sx 
         />
       </FiltersBlock>
 
-      <FiltersBlock label="Role:" isShow={!!currentFilters.role.length}>
-        {currentFilters.role.map((item) => (
-          <Chip {...chipProps} key={item} label={item} onDelete={() => handleRemoveRole(item)} />
-        ))}
-      </FiltersBlock>
-
-      <FiltersBlock label="Keyword:" isShow={!!currentFilters.name}>
-        <Chip {...chipProps} label={currentFilters.name} onDelete={handleRemoveKeyword} />
+      <FiltersBlock label="Keyword:" isShow={!!currentFilters.userName}>
+        <Chip {...chipProps} label={currentFilters.userName} onDelete={handleRemoveKeyword} />
       </FiltersBlock>
     </FiltersResult>
   );

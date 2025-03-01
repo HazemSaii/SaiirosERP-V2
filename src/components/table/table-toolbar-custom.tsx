@@ -1,47 +1,38 @@
-import type { IUserTableFilters } from 'src/types/user';
-import type { SelectChangeEvent } from '@mui/material/Select';
-import type { UseSetStateReturn } from 'minimal-shared/hooks';
-
 import { useCallback } from 'react';
-import { usePopover } from 'minimal-shared/hooks';
-
 import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
 
+import { usePopover } from 'minimal-shared/hooks';
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-type Props = {
-  onResetPage: () => void;
-  filters: UseSetStateReturn<IUserTableFilters>;
-  options: {
-    roles: string[];
-  };
+type Props<T extends Record<string, any>> = {
+  filterValue: keyof T;
+  value: string;
+  filters: T;
+  onFilters: (name: string, value: any) => void;
 };
 
-export function UserTableToolbar({ filters, options, onResetPage }: Props) {
+export default function TableToolbarCustom<T extends Record<string, any>>({
+  filterValue,
+  value,
+  onFilters,
+}: Props<T>) {
   const menuActions = usePopover();
-
-  const { state: currentFilters, setState: updateFilters } = filters;
 
   const handleFilterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      onResetPage();
-      updateFilters({ userName: event.target.value });
+      onFilters(filterValue as string, event.target.value);
     },
-    [onResetPage, updateFilters]
+    [onFilters, filterValue]
   );
+
   const renderMenuActions = () => (
     <CustomPopover
       open={menuActions.open}
@@ -91,7 +82,7 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
         >
           <TextField
             fullWidth
-            value={currentFilters.userName}
+            value={value}
             onChange={handleFilterName}
             placeholder="Search..."
             slotProps={{

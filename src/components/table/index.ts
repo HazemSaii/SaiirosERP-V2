@@ -13,3 +13,7 @@ export * from './table-head-custom';
 export * from './table-selected-action';
 
 export * from './table-pagination-custom';
+
+export * from './table-toolbar-custom';
+
+export * from './table-filters-results';
