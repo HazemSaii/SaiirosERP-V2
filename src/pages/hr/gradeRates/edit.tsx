@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-// import { GradeRatesEditView } from 'src/sections/hr/gradeRates/view';
+import { GradeRatesEditView } from 'src/sections/hr/gradeRates/view';
 
 
 
@@ -17,7 +17,7 @@ export default function GradesEditPage(){
         <Helmet>
         <title> Grade Rates Edit</title>
        </Helmet>
-       {/* <GradeRatesEditView id={`${id}`}/> */}
+       <GradeRatesEditView id={`${id}`}/>
     
         </>
     )

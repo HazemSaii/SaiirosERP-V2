@@ -38,10 +38,22 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
   const handleFilterName = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onResetPage();
-      updateFilters({ userName: event.target.value });
+      updateFilters({ name: event.target.value });
     },
     [onResetPage, updateFilters]
   );
+
+  const handleFilterRole = useCallback(
+    (event: SelectChangeEvent<string[]>) => {
+      const newValue =
+        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value;
+
+      onResetPage();
+      updateFilters({ role: newValue });
+    },
+    [onResetPage, updateFilters]
+  );
+
   const renderMenuActions = () => (
     <CustomPopover
       open={menuActions.open}
@@ -80,6 +92,30 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
           alignItems: { xs: 'flex-end', md: 'center' },
         }}
       >
+        <FormControl sx={{ flexShrink: 0, width: { xs: 1, md: 200 } }}>
+          <InputLabel htmlFor="filter-role-select">Role</InputLabel>
+          <Select
+            multiple
+            value={currentFilters.role}
+            onChange={handleFilterRole}
+            input={<OutlinedInput label="Role" />}
+            renderValue={(selected) => selected.map((value) => value).join(', ')}
+            inputProps={{ id: 'filter-role-select' }}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 240 } } }}
+          >
+            {options.roles.map((option) => (
+              <MenuItem key={option} value={option}>
+                <Checkbox
+                  disableRipple
+                  size="small"
+                  checked={currentFilters.role.includes(option)}
+                />
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Box
           sx={{
             gap: 2,
@@ -91,7 +127,7 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
         >
           <TextField
             fullWidth
-            value={currentFilters.userName}
+            value={currentFilters.name}
             onChange={handleFilterName}
             placeholder="Search..."
             slotProps={{

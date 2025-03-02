@@ -126,7 +126,7 @@ export default function LocationsManagementView() {
         }
       } catch (error) {
         setDeleteLoading(false);
-        toast.error(t('This record cannot be deleted'));
+        toast.info(t('This record cannot be deleted'));
       }
     },
     [dataInPage.length, t, table, tableData]

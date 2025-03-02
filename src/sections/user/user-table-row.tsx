@@ -1,152 +1,169 @@
 import type { IUserItem } from 'src/types/user';
+
 import { useBoolean, usePopover } from 'minimal-shared/hooks';
+
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
+
+import { RouterLink } from 'src/routes/components';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomPopover } from 'src/components/custom-popover';
-import { useTranslate } from 'src/locales';
-import { Divider, ListItemText, Typography } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
+
+import { UserQuickEditForm } from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
 type Props = {
   row: IUserItem;
+  selected: boolean;
+  editHref: string;
+  onSelectRow: () => void;
   onDeleteRow: () => void;
-  onEditRow: () => void;
-  deleteLoading: boolean;
 };
 
-export default function UserTableRow({ row, onEditRow, onDeleteRow, deleteLoading }: Props) {
-  const { userName, status, statusCode, userEmail } = row;
-  const { t } = useTranslate();
-  const confirm = useBoolean();
-  const popover = usePopover();
-  const recordInfo = useBoolean();
-  const resetPassword = useBoolean();
+export function UserTableRow({ row, selected, editHref, onSelectRow, onDeleteRow }: Props) {
+  const menuActions = usePopover();
+  const confirmDialog = useBoolean();
+  const quickEditForm = useBoolean();
+
+  const renderQuickEditForm = () => (
+    <UserQuickEditForm
+      currentUser={row}
+      open={quickEditForm.value}
+      onClose={quickEditForm.onFalse}
+    />
+  );
+
   const renderMenuActions = () => (
     <CustomPopover
-      open={popover.open}
-      anchorEl={popover.anchorEl}
-      onClose={popover.onClose}
+      open={menuActions.open}
+      anchorEl={menuActions.anchorEl}
+      onClose={menuActions.onClose}
       slotProps={{ arrow: { placement: 'right-top' } }}
     >
       <MenuList>
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:pen-bold" />
-          {t('Edit')}
-        </MenuItem>
+        <li>
+          <MenuItem component={RouterLink} href={editHref} onClick={() => menuActions.onClose()}>
+            <Iconify icon="solar:pen-bold" />
+            Edit
+          </MenuItem>
+        </li>
 
         <MenuItem
           onClick={() => {
-            confirm.onTrue();
-            popover.onClose();
+            confirmDialog.onTrue();
+            menuActions.onClose();
           }}
+          sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" style={{ color: '#d94545' }} />
-          {t('Delete')}
-        </MenuItem>
-
-        <Divider />
-
-        <MenuItem
-          onClick={() => {
-            resetPassword.onTrue();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="mdi:password-reset" />
-          {t('Reset Password')}
-        </MenuItem>
-
-        <Divider />
-
-        <MenuItem
-          onClick={() => {
-            recordInfo.onTrue();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:info-circle-bold" />
-          {t('Record Info')}
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
         </MenuItem>
       </MenuList>
     </CustomPopover>
   );
 
+  const renderConfirmDialog = () => (
+    <ConfirmDialog
+      open={confirmDialog.value}
+      onClose={confirmDialog.onFalse}
+      title="Delete"
+      content="Are you sure want to delete?"
+      action={
+        <Button variant="contained" color="error" onClick={onDeleteRow}>
+          Delete
+        </Button>
+      }
+    />
+  );
+
   return (
     <>
-      <TableRow hover>
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }} onClick={() => onEditRow()}>
-          <Avatar alt={userName} sx={{ mr: 2 }} />
-          <ListItemText primary={<Typography variant="body2">{userName}</Typography>} />
+      <TableRow hover selected={selected} aria-checked={selected} tabIndex={-1}>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={selected}
+            onClick={onSelectRow}
+            inputProps={{
+              id: `${row.id}-checkbox`,
+              'aria-label': `${row.id} checkbox`,
+            }}
+          />
         </TableCell>
+        <TableCell>
+          <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
+            <Avatar alt={row.name} src={row.avatarUrl} />
+            <Stack sx={{ typography: 'body2', flex: '1 1 auto', alignItems: 'flex-start' }}>
+              <Link
+                component={RouterLink}
+                href={editHref}
+                color="inherit"
+                sx={{ cursor: 'pointer' }}
+              >
+                {row.name}
+              </Link>
+              <Box component="span" sx={{ color: 'text.disabled' }}>
+                {row.email}
+              </Box>
+            </Stack>
+          </Box>
+        </TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.phoneNumber}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.company}</TableCell>
 
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{userEmail}</TableCell>
-
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{userEmail}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.role}</TableCell>
 
         <TableCell>
           <Label
             variant="soft"
             color={
-              (statusCode === 1 && 'success') ||
-              (statusCode === 2 && 'warning') ||
-              (statusCode === 3 && 'error') ||
+              (row.status === 'active' && 'success') ||
+              (row.status === 'pending' && 'warning') ||
+              (row.status === 'banned' && 'error') ||
               'default'
             }
           >
-            {t(status)}
+            {row.status}
           </Label>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
+        <TableCell>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title="Quick Edit" placement="top" arrow>
+              <IconButton
+                color={quickEditForm.value ? 'inherit' : 'default'}
+                onClick={quickEditForm.onTrue}
+              >
+                <Iconify icon="solar:pen-bold" />
+              </IconButton>
+            </Tooltip>
+
+            <IconButton
+              color={menuActions.open ? 'inherit' : 'default'}
+              onClick={menuActions.onOpen}
+            >
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </Box>
         </TableCell>
       </TableRow>
 
-      <RecordInfoDialog
-        createdBy={row.createdByUserName}
-        creationDate={row.createdDate}
-        updateBy={row.updatedByUserName}
-        updateDate={row.updatedDate}
-        open={recordInfo.value}
-        onClose={recordInfo.onFalse}
-      />
-
-      {/* <ResetPasswordDialog row={row} open={resetPassword.value} onClose={resetPassword.onFalse} /> */}
-
-      <ConfirmDialog
-        open={confirm.value}
-        onClose={confirm.onFalse}
-        title={t('Delete')}
-        content={t('Are you sure want to delete?')}
-        action={
-          <LoadingButton
-            loading={deleteLoading}
-            color="error"
-            onClick={onDeleteRow}
-            variant="contained"
-          >
-            {t('Delete')}
-          </LoadingButton>
-        }
-      />
+      {renderQuickEditForm()}
       {renderMenuActions()}
+      {renderConfirmDialog()}
     </>
   );
 }

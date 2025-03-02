@@ -6,7 +6,6 @@ export const defaultNS = 'common';
 
 export type LanguageValue = (typeof languages)[number];
 
-export const defaultLang = languages[0];
 // ----------------------------------------------------------------------
 
 export function i18nOptions(lng = fallbackLng, ns = defaultNS) {

@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetJobs(currentLang:string) {
+export function UseGetJobs(currentLang:string) {
   const config = {
     headers: {
        'Lang': currentLang.toUpperCase(),
@@ -28,7 +28,7 @@ export function useGetJobs(currentLang:string) {
     );
     return memoizedValue;
 }
-export function useGetApprovedJobs(currentLang:string) {
+export function UseGetApprovedJobs(currentLang:string) {
   const config = {
     headers: {
        'Lang': currentLang.toUpperCase(),
@@ -52,7 +52,7 @@ export function useGetApprovedJobs(currentLang:string) {
     return memoizedValue;
 }
 
-export function useGetJob(id: number) {
+export function UseGetJob(id: number) {
   
   const URL = id ? [endpoints.jobs.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
@@ -75,17 +75,17 @@ export function useGetJob(id: number) {
   
 }
 
-export function useDeleteJobs(jobId: string){
+export function UseDeleteJobs(jobId: string){
   const res = axiosInstance.delete(endpoints.jobs.delete, { params: { jobId } });
    return res;
 }
 
-export function useAddJobs(data: any) {
+export function UseAddJobs(data: any) {
   const res = axiosInstance.post(endpoints.jobs.create, data);
   return res;
 }
 
-export function useEditJobs(id: any) {
+export function UseEditJobs(id: any) {
   const res = axiosInstance.post(endpoints.jobs.edit, id);
   return res;
 }

@@ -1,7 +1,10 @@
+import type { TableHeadCellProps } from 'src/components/table';
 import type { IUserItem, IUserTableFilters } from 'src/types/user';
-import { useState, useEffect, useCallback } from 'react';
-import { DashboardContent } from 'src/layouts/dashboard';
+
+import { useState, useCallback } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
+import { useBoolean, useSetState } from 'minimal-shared/hooks';
+
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -11,187 +14,197 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { useBoolean, useSetState } from 'minimal-shared/hooks';
-import { useLocales, useTranslate } from 'src/locales';
-import { useGetUsers, useDeleteUser } from 'src/actions/security/user';
+import { RouterLink } from 'src/routes/components';
+
+import { DashboardContent } from 'src/layouts/dashboard';
+import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
+
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import {
   useTable,
-  rowInPage,
   emptyRows,
+  rowInPage,
   TableNoData,
   getComparator,
-  TableSkeleton,
   TableEmptyRows,
   TableHeadCustom,
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-import { useGetAllLookups } from 'src/actions/shared/shared';
-import UserTableRow from '../user-table-row';
+
+import { UserTableRow } from '../user-table-row';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { UserTableFiltersResult } from '../user-table-filters-result';
-import { RouterLink } from 'src/routes/components/router-link';
+
+// ----------------------------------------------------------------------
+
+const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
+
+const TABLE_HEAD: TableHeadCellProps[] = [
+  { id: 'name', label: 'Name' },
+  { id: 'phoneNumber', label: 'Phone number', width: 180 },
+  { id: 'company', label: 'Company', width: 220 },
+  { id: 'role', label: 'Role', width: 180 },
+  { id: 'status', label: 'Status', width: 100 },
+  { id: '', width: 88 },
+];
+
 // ----------------------------------------------------------------------
 
 export function UserListView() {
-  const { t } = useTranslate();
-  const router = useRouter();
   const table = useTable();
-  const { users, usersLoading } = useGetUsers();
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [tableData, setTableData] = useState<IUserItem[]>([]);
+
   const confirmDialog = useBoolean();
-  const defaultFilters: IUserTableFilters = {
-    userName: '',
-    status: 'All',
-  };
 
-  const filters = useSetState<IUserTableFilters>(defaultFilters);
+  const [tableData, setTableData] = useState<IUserItem[]>(_userList);
+
+  const filters = useSetState<IUserTableFilters>({ name: '', role: [], status: 'all' });
   const { state: currentFilters, setState: updateFilters } = filters;
-
-  const handleFilterStatus = useCallback(
-    (event: React.SyntheticEvent, newValue: string) => {
-      table.onResetPage();
-      updateFilters({ status: newValue });
-    },
-    [table, updateFilters]
-  );
 
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
     filters: currentFilters,
   });
-  const { currentLang } = useLocales();
-  const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
 
-  // Add this to get status options from API
-  const { lookups: USER_STATUS_OPTIONS, lookupsLoading: USER_STATUSLoading } = useGetAllLookups(
-    'USER_STATUS',
-    currentLanguage
-  );
-
-  const STATUS_OPTIONS = [
-    { valueCode: 'All', valueName: 'All', color: 'default' },
-    ...USER_STATUS_OPTIONS,
-  ];
-  const TABLE_HEAD = [
-    { id: 'userName', label: t('Username') },
-    { id: 'userEmail', label: t('Email'), width: 180 },
-    { id: 'supplier', label: t('Name'), width: 220 },
-    { id: 'status', label: t('Status'), width: 220 },
-    { id: '', width: 88 },
-  ];
-  // ----------------------------------------------------------------------
   const dataInPage = rowInPage(dataFiltered, table.page, table.rowsPerPage);
-  const canReset = !!currentFilters.userName || currentFilters.status !== 'All';
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
-  // Add useEffect to load users data
-  useEffect(() => {
-    if (!usersLoading) {
-      setTableData(users || []);
-    } else {
-      setTableData([]);
-    }
-  }, [usersLoading, users]);
 
-  // Update handleDeleteRow to use API
+  const canReset =
+    !!currentFilters.name || currentFilters.role.length > 0 || currentFilters.status !== 'all';
+
+  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+
   const handleDeleteRow = useCallback(
-    async (id: string) => {
-      try {
-        setDeleteLoading(true);
-        const deletedUser = await useDeleteUser(id);
-        if (deletedUser.status === 200) {
-          setDeleteLoading(false);
-          toast.success(t('Delete success!'));
-          const deleteRow = tableData.filter((row) => row.id !== id);
-          setTableData(deleteRow);
-          table.onUpdatePageDeleteRow(dataInPage.length);
-        }
-      } catch (error) {
-        setDeleteLoading(false);
-        toast.error(t('This record cannot be deleted'));
-      }
-    },
-    [dataInPage.length, t, table, tableData]
-  );
-  const handleEditRow = useCallback(
     (id: string) => {
-      router.push(paths.security.users.edit(id));
+      const deleteRow = tableData.filter((row) => row.id !== id);
+
+      toast.success('Delete success!');
+
+      setTableData(deleteRow);
+
+      table.onUpdatePageDeleteRow(dataInPage.length);
     },
-    [router]
+    [dataInPage.length, table, tableData]
   );
-  const render_skelton = [...Array(20)].map((_, index) => <TableSkeleton key={index} />);
+
+  const handleDeleteRows = useCallback(() => {
+    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+
+    toast.success('Delete success!');
+
+    setTableData(deleteRows);
+
+    table.onUpdatePageDeleteRows(dataInPage.length, dataFiltered.length);
+  }, [dataFiltered.length, dataInPage.length, table, tableData]);
+
+  const handleFilterStatus = useCallback(
+    (event: React.SyntheticEvent, newValue: string) => {
+      table.onResetPage();
+      updateFilters({ status: newValue });
+    },
+    [updateFilters, table]
+  );
+
+  const renderConfirmDialog = () => (
+    <ConfirmDialog
+      open={confirmDialog.value}
+      onClose={confirmDialog.onFalse}
+      title="Delete"
+      content={
+        <>
+          Are you sure want to delete <strong> {table.selected.length} </strong> items?
+        </>
+      }
+      action={
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => {
+            handleDeleteRows();
+            confirmDialog.onFalse();
+          }}
+        >
+          Delete
+        </Button>
+      }
+    />
+  );
+
   return (
     <>
       <DashboardContent>
         <CustomBreadcrumbs
-          heading={t('User Management')}
+          heading="List"
           links={[
-            { name: t('Security'), href: paths.security.root },
-            { name: t('Users'), href: paths.security.users.management },
+            { name: 'Dashboard', href: paths.dashboard.root },
+            { name: 'User', href: paths.dashboard.user.root },
+            { name: 'List' },
           ]}
           action={
             <Button
               component={RouterLink}
-              href={paths.security.users.new}
+              href={paths.dashboard.user.new}
               variant="contained"
               startIcon={<Iconify icon="mingcute:add-line" />}
             >
-              {t('New')}
+              New user
             </Button>
           }
-          sx={{
-            mb: { xs: 3, md: 5 },
-          }}
+          sx={{ mb: { xs: 3, md: 5 } }}
         />
+
         <Card>
           <Tabs
             value={currentFilters.status}
             onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) =>
-                `inset 0 -2px 0 0 ${varAlpha(theme.palette.grey['500Channel'], 0.08)}`,
-            }}
+            sx={[
+              (theme) => ({
+                px: 2.5,
+                boxShadow: `inset 0 -2px 0 0 ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)}`,
+              }),
+            ]}
           >
-            {!USER_STATUSLoading
-              ? STATUS_OPTIONS.map((tab) => (
-                  <Tab
-                    key={tab.valueName}
-                    iconPosition="end"
-                    value={tab.valueName}
-                    label={t(tab.valueName)}
-                    icon={
-                      <Label
-                        variant={
-                          ((tab.valueName === 'All' || tab.valueName === currentFilters.status) &&
-                            'filled') ||
-                          'soft'
-                        }
-                        color={tab.text1 || 'default'}
-                      >
-                        {tab.valueName === 'All'
-                          ? tableData.length
-                          : tableData.filter((user) => user.status === tab.valueName).length}
-                      </Label>
+            {STATUS_OPTIONS.map((tab) => (
+              <Tab
+                key={tab.value}
+                iconPosition="end"
+                value={tab.value}
+                label={tab.label}
+                icon={
+                  <Label
+                    variant={
+                      ((tab.value === 'all' || tab.value === currentFilters.status) && 'filled') ||
+                      'soft'
                     }
-                  />
-                ))
-              : []}
+                    color={
+                      (tab.value === 'active' && 'success') ||
+                      (tab.value === 'pending' && 'warning') ||
+                      (tab.value === 'banned' && 'error') ||
+                      'default'
+                    }
+                  >
+                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
+                      ? tableData.filter((user) => user.status === tab.value).length
+                      : tableData.length}
+                  </Label>
+                }
+              />
+            ))}
           </Tabs>
+
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            options={{ roles: [] }}
+            options={{ roles: _roles }}
           />
+
           {canReset && (
             <UserTableFiltersResult
               filters={filters}
@@ -200,6 +213,7 @@ export function UserListView() {
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
+
           <Box sx={{ position: 'relative' }}>
             <TableSelectedAction
               dense={table.dense}
@@ -219,6 +233,7 @@ export function UserListView() {
                 </Tooltip>
               }
             />
+
             <Scrollbar>
               <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
                 <TableHeadCustom
@@ -228,9 +243,15 @@ export function UserListView() {
                   rowCount={dataFiltered.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
+                  onSelectAllRows={(checked) =>
+                    table.onSelectAllRows(
+                      checked,
+                      dataFiltered.map((row) => row.id)
+                    )
+                  }
                 />
+
                 <TableBody>
-                  {usersLoading && render_skelton}
                   {dataFiltered
                     .slice(
                       table.page * table.rowsPerPage,
@@ -240,20 +261,24 @@ export function UserListView() {
                       <UserTableRow
                         key={row.id}
                         row={row}
+                        selected={table.selected.includes(row.id)}
+                        onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
-                        deleteLoading={deleteLoading}
+                        editHref={paths.dashboard.user.edit(row.id)}
                       />
                     ))}
+
                   <TableEmptyRows
                     height={table.dense ? 56 : 56 + 20}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
+
                   <TableNoData notFound={notFound} />
                 </TableBody>
               </Table>
             </Scrollbar>
           </Box>
+
           <TablePaginationCustom
             page={table.page}
             dense={table.dense}
@@ -265,6 +290,8 @@ export function UserListView() {
           />
         </Card>
       </DashboardContent>
+
+      {renderConfirmDialog()}
     </>
   );
 }
@@ -278,7 +305,8 @@ type ApplyFilterProps = {
 };
 
 function applyFilter({ inputData, comparator, filters }: ApplyFilterProps) {
-  const { userName, status } = filters;
+  const { name, status, role } = filters;
+
   const stabilizedThis = inputData.map((el, index) => [el, index] as const);
 
   stabilizedThis.sort((a, b) => {
@@ -289,14 +317,16 @@ function applyFilter({ inputData, comparator, filters }: ApplyFilterProps) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (userName) {
-    inputData = inputData.filter((user) =>
-      user.userName.toLowerCase().includes(userName.toLowerCase())
-    );
+  if (name) {
+    inputData = inputData.filter((user) => user.name.toLowerCase().includes(name.toLowerCase()));
   }
 
-  if (status !== 'All') {
+  if (status !== 'all') {
     inputData = inputData.filter((user) => user.status === status);
+  }
+
+  if (role.length) {
+    inputData = inputData.filter((user) => role.includes(user.role));
   }
 
   return inputData;

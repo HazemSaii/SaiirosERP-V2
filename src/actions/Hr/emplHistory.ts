@@ -12,7 +12,7 @@ export function UseupdateemplHistory(data: any) {
   const res = axiosInstance.post(endpoints.emplHistory.updateHistory, data);
   return res;
 }
-export function useGetContractHistoriesByPersonId(personId: number) {
+export function UseGetContractHistoriesByPersonId(personId: number) {
   const URL = personId ? [endpoints.emplHistory.getContractHistoriesByPersonId, { params: { personId } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,

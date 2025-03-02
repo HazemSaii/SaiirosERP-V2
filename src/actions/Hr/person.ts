@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetApprovedPersons(currentLang = 'EN') {
+export function UseGetApprovedPersons(currentLang = 'EN') {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -28,7 +28,7 @@ export function useGetApprovedPersons(currentLang = 'EN') {
   );
   return memoizedValue;
 }
-export function useGetPersons(currentLang = 'EN') {
+export function UseGetPersons(currentLang = 'EN') {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -56,7 +56,7 @@ export function UseAddPerson(data: any) {
   return res;
 }
 
-export function useGetPerson(id: number) {
+export function UseGetPerson(id: number) {
   const URL = id ? [endpoints.person.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
