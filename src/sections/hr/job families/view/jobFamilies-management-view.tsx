@@ -26,8 +26,8 @@ import {
   useTable,
   emptyRows,
   TableNoData,
-  getComparator,
   TableSkeleton,
+  getComparator,
   TableEmptyRows,
   TableHeadCustom,
   TablePaginationCustom,
@@ -253,7 +253,7 @@ export default function JobFamiliesManagementView() {
                   onSort={table.onSort}
                 />
                 <TableBody>
-                  {jobFamiliesLoading && render_skelton}
+                  {jobFamiliesLoading&&!jobFamilies && render_skelton}
 
                   {dataFiltered
                     .slice(

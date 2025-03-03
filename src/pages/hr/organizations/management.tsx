@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
-// import { OrganizationsManagementView } from 'src/sections/hr/organizations/view';
+
+import { OrganizationsManagementView } from 'src/sections/hr/organizations/view';
 
 
 
@@ -11,7 +12,7 @@ export default function OrganizationsManagementPage() {
     <Helmet>
         <title> Organizations Management</title>
     </Helmet>
-    {/* <OrganizationsManagementView/> */}
+    <OrganizationsManagementView/>
     </>
 
   );

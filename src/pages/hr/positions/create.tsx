@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-// import { PositionsCreateView } from 'src/sections/hr/positions/view';
+import { PositionsCreateView } from 'src/sections/hr/positions/view';
 
 // ----------------------------------------------------------------------
 
@@ -10,7 +10,7 @@ export default function PositionsCreatePage() {
       <Helmet>
         <title> Position Create </title>
       </Helmet>
-      {/* <PositionsCreateView/> */}
+      <PositionsCreateView/>
     </>
   );
 }

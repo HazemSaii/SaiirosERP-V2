@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetPositions(currentLang: string) {
+export function UseGetPositions(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -33,7 +33,7 @@ export function UseAddPosition(position: any) {
   return res;
 }
 
-export function useGetPosition(positionId: number) {
+export function UseGetPosition(positionId: number) {
   const URL = positionId ? [endpoints.positions.details, { params: { positionId } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
@@ -64,7 +64,7 @@ export function UseEditPosition(position: any) {
   return res;
 }
 
-export function useGetApprovedPositions(currentLang: string) {
+export function UseGetApprovedPositions(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),

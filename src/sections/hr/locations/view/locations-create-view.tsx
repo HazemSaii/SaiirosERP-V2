@@ -97,7 +97,7 @@ export default function LocationsCreateView() {
       }
     } catch (error: any) {
         setSubmitLoading(false);
-        toast.error(error?.response?.data?.message || error?.message || t('An error occurred'));
+        toast.error(error.message)
       }
   };
 

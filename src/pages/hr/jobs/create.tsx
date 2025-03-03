@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-// import JobsCreateView from "src/sections/hr/jobs/view/jobs-create-view";
+import JobsCreateView from "src/sections/hr/jobs/view/jobs-create-view";
 
 export default function JobsCreatePage(){
     return(
@@ -8,7 +8,7 @@ export default function JobsCreatePage(){
         <Helmet>
          <title> Jobs Create </title>
          </Helmet>
-         {/* <JobsCreateView/> */}
+         <JobsCreateView/>
         </>
     )
 }

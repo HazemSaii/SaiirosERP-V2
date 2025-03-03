@@ -65,7 +65,7 @@ export function PaginationWithApi() {
 
         <TableBody>
           {isLoading ? (
-            <TableSkeleton rowCount={perPage} cellCount={TABLE_HEAD.length} sx={{ height: 69 }} />
+            <TableSkeleton sx={{ height: 69 }} />
           ) : (
             data?.products.map((row) => (
               <TableRow key={row.id}>

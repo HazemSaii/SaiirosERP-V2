@@ -123,7 +123,7 @@ export default function LocationsEditView({ locationId }: Props) {
     const hasChanges = hasFormChanges([locationData], [mapLocationInfo(data)]);
 
     if (!hasChanges) {
-      toast.success(t('No changes to save.'));
+      toast.info(t('No changes to save.'));
       router.push(paths.hr.locations.management);
     } else {
       try {
@@ -140,7 +140,7 @@ export default function LocationsEditView({ locationId }: Props) {
         }
       } catch (error: any) {
         setSubmitLoading(false);
-        toast.error(error?.response?.data?.message || error?.message || t('An error occurred'));
+        toast.error(error.message);
       }
     }
   };

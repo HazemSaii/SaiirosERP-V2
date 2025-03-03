@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetGrades(currentLang:string) {
+export function UseGetGrades(currentLang:string) {
      const config = {
        headers: {
          'Lang': currentLang.toUpperCase(),
@@ -30,7 +30,7 @@ export function useGetGrades(currentLang:string) {
       );
       return memoizedValue;
 }
-export function useGetApprovedGrades(currentLang:string) {
+export function UseGetApprovedGrades(currentLang:string) {
   const config = {
     headers: {
       'Lang': currentLang.toUpperCase(),
@@ -55,7 +55,7 @@ export function useGetApprovedGrades(currentLang:string) {
    );
    return memoizedValue;
 }
-export function useGetGrade(id: number) {
+export function UseGetGrade(id: number) {
   
   const URL = id ? [endpoints.Grades.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
@@ -78,17 +78,17 @@ export function useGetGrade(id: number) {
   
 }
 
-export function useDeleteGrades(id: string){
+export function UseDeleteGrades(id: string){
   const res = axiosInstance.delete(endpoints.Grades.delete, { params: { id } });
    return res;
 }
 
-export function useAddGrades(data: any) {
+export function UseAddGrades(data: any) {
   const res = axiosInstance.post(endpoints.Grades.create, data);
   return res;
 }
 
-export function useEditGrades(id: any) {
+export function UseEditGrades(id: any) {
   const res = axiosInstance.post(endpoints.Grades.edit, id);
   return res;
 }

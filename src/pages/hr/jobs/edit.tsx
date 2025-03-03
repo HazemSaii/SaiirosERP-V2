@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-// import { JobsEditView } from 'src/sections/hr/jobs/view';
+import { JobsEditView } from 'src/sections/hr/jobs/view';
 
 export default function JobsEditPage(){
     const params = useParams();
@@ -16,7 +16,7 @@ export default function JobsEditPage(){
         <title> Jobs Edit</title>
        </Helmet>
 
-       {/* <JobsEditView id={`${id}`}/> */}
+       <JobsEditView id={`${id}`}/>
         
         </>
     )

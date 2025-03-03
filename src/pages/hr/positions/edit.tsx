@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-// import { PositionsEditView } from 'src/sections/hr/positions/view';
+import { PositionsEditView } from 'src/sections/hr/positions/view';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ export default function PositionsEditPage() {
     <Helmet>
         <title>Positions Edit</title>
       </Helmet>
-      {/* <PositionsEditView id={`${id}`}/> */}
+      <PositionsEditView id={`${id}`}/>
 
     </>
   );

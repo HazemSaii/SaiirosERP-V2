@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetOrganizations(currentLang: string) {
+export function UseGetOrganizations(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -27,7 +27,7 @@ export function useGetOrganizations(currentLang: string) {
   );
   return memoizedValue;
 }
-export function useGetApprovedOrganizations(currentLang: string) {
+export function UseGetApprovedOrganizations(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -56,7 +56,7 @@ export function UseAddOrganization(organization: any) {
   return res;
 }
 
-export function useGetOrganization(id: number) {
+export function UseGetOrganization(id: number) {
   const URL = id ? [endpoints.organization.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
