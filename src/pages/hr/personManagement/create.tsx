@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-// import { PersonCreateView } from "src/sections/hr/personManagement/view";
+import { PersonCreateView } from "src/sections/hr/personManagement/view";
 
 export default function PersonCreatePage(){
     return(
@@ -8,7 +8,7 @@ export default function PersonCreatePage(){
          <Helmet>
          <title> Person Hire </title>
          </Helmet>
-         {/* <PersonCreateView/> */}
+         <PersonCreateView/>
         </>
     )
 }

@@ -325,7 +325,7 @@ export const paths = {
       new: `${ROOTS.HUMAN_RESOURCES}/personManagement/new`,
       hire: `${ROOTS.HUMAN_RESOURCES}/personManagement/hire`,
       update: (id: string) => `${ROOTS.HUMAN_RESOURCES}/personManagement/${id}/update`,
-      correct: (id: string) => `${ROOTS.HUMAN_RESOURCES}/personManagement/${id}/correct`,
+      correct: (id: string) => `${ROOTS.HUMAN_RESOURCES}/personManagement/${id}/details`,
     },
   },
   settings: {

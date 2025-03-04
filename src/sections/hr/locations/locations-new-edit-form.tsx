@@ -167,18 +167,18 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
     };
 
     
-    const validateFieldOnBlur = useMemo(
-      () => async (name: string) => {
-        try {
-          return await trigger(name);
-        } catch (error) {
-          console.error(`Validation error on ${name}:`, error);
-          return false;
+    const validateFieldOnBlur = async (name: string) => {
+      try {
+        const value = methods.getValues(name);
+        if (value === '') {
+          methods.setValue(name, null, { shouldValidate: true });
         }
-      },
-      [trigger]
-    );
-
+        return await trigger(name);
+      } catch (error) {
+        console.error(`Validation error on ${name}:`, error);
+        return false;
+      }
+    };
     const LocationName = currentLanguage === 'en' ? 'locationName.EN' : 'locationName.AR';
     console.log('LocationName', LocationName);
 

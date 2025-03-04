@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-//  import { PersonUpdateView } from 'src/sections/hr/personManagement/view';
+ import { PersonUpdateView } from 'src/sections/hr/personManagement/view';
 
 
 
@@ -17,7 +17,7 @@ export default function PersonUpdatePage(){
         <Helmet>
         <title> Person Update</title>
        </Helmet>
-       {/* <PersonUpdateView id={`${id}`}/> */}
+       <PersonUpdateView id={`${id}`}/>
     
         </>
     )

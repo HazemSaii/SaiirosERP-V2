@@ -73,39 +73,38 @@ const PositionsNewEditForm = forwardRef<PositionsNewEditFormHandle, Props>(
     const [open, setOpen] = useState(false);
     const handleOpenDialog = () => setOpen(true);
     const handleCloseDialog = () => setOpen(false);
-    
     const langSchema = z.object({
       AR:
         currentLanguage === 'ar'
           ? z
               .string()
-              .min(1, { message: t('Position Name is required') })
-
-              .min(3, { message: t('Invalid Position Name') })
-              .regex(
-                /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/,
-                {
-                  message: t('Invalid Position Name'),
-                }
+              .nullable()
+              .transform(value => (value === null || value === undefined ? '' : value)) // Convert null/undefined to ''
+              .refine(value => value.length > 0, { message: t('Position Name is required') }) // Required validation
+              .refine(value => value.length >= 3, { message: t('Invalid Position Name') }) // Minimum length validation
+              .refine(
+                value => /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/.test(value),
+                { message: t('Invalid Position Name') }
               )
-              .nonempty({ message: t('Position Name is required') }) // Equivalent to `required`
           : z.string().optional(),
-
+    
       EN:
         currentLanguage === 'en'
           ? z
               .string()
-              .min(1, { message: t('Position Name is required') })
-              .min(3, { message: t('Invalid Position Name') })
-              .regex(
-                /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/,
-                {
-                  message: t('Invalid Position Name'),
-                }
+              .nullable()
+              .transform(value => (value === null || value === undefined ? '' : value)) // Convert null/undefined to ''
+              .refine(value => value.length > 0, { message: t('Position Name is required') }) // Required validation
+              .refine(value => value.length >= 3, { message: t('Invalid Position Name') }) // Minimum length validation
+              .refine(
+                value => /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/.test(value),
+                { message: t('Invalid Position Name') }
               )
-              .nonempty({ message: t('Position Name is required') })
           : z.string().optional(),
     });
+    
+    
+    
     const isEdit = operation === 'edit';
     const locationIds = useMemo(() =>  locationsLoading ? [] : locations.map((loc: any) => loc.locationId), [locations,locationsLoading]);
     const jobIds = useMemo(() =>  jobsLoading ? [] : jobs.map((job: any) => job.jobId), [jobs,jobsLoading]);
@@ -115,14 +114,38 @@ const PositionsNewEditForm = forwardRef<PositionsNewEditFormHandle, Props>(
 
     const NewPositionSchema = z.object({
       positionName: langSchema, 
-      organizationsId:schemaHelper.nullableInput(z.string().min(1, { message: t("Organization is required") }),{ message: t('Organization is required') })
+      organizationsId:schemaHelper.nullableInput(
+        z.union([z.string(), z.number(), z.null()])
+          .transform((val) => (val === null ? "" : String(val)))
+          .refine((val) => val.trim().length > 0, {
+            message: t("Organization is required"),
+          }),{
+            message: t("Organization is required")}
+      )
       ,
-      locationId:    schemaHelper.nullableInput( z.string().min(1, { message: t("Location is required") }),{ message: t('Location is required') })
+      locationId:    schemaHelper.nullableInput(
+        z.union([z.string(), z.number(), z.null()])
+          .transform((val) => (val === null ? "" : String(val)))
+          .refine((val) => val.trim().length > 0, {
+            message: t("Location is required"),
+          }),{
+            message: t("Location is required")}
+      )
       ,
-      jobId:    schemaHelper.nullableInput( z.string().min(1, { message: t("Job is required") }),{ message: t('Job is required') })
+      jobId:   schemaHelper.nullableInput(
+        z.union([z.string(), z.number(), z.null()])
+          .transform((val) => (val === null ? "" : String(val)))
+          .refine((val) => val.trim().length > 0, {
+            message: t("Job is required"),
+          }),{
+            message: t("Job is required")}
+      )
       ,
-      headcounts:    schemaHelper.nullableInput( z.string()
-      .min(1, { message: t("Head Counts is required") })
+      headcounts:    schemaHelper.nullableInput(        z.union([z.string(), z.number(), z.null()])
+      .transform((val) => (val === null ? "" : String(val)))
+      .refine((val) => val.trim().length > 0, {
+        message: t("Head Counts is required"),
+      })
       .refine(value => Number(value) >= 1, { message: t("Order must be greater than or equal to 1") }),{ message: t('Head Counts is required') })
       ,
       active: z.boolean(),
@@ -217,7 +240,7 @@ const PositionsNewEditForm = forwardRef<PositionsNewEditFormHandle, Props>(
       }
     };
 
-    const positionName = currentLanguage === 'en' ? 'positionName.EN' : 'positionName.AR';
+    const PositionName = currentLanguage === 'en' ? 'positionName.EN' : 'positionName.AR';
 
     
 
@@ -231,9 +254,9 @@ const PositionsNewEditForm = forwardRef<PositionsNewEditFormHandle, Props>(
           <Grid item xs={12} sm={8}>
             <RHFGlobalTextField
               required
-              name={positionName}
+              name={PositionName}
               label={t('Position Name')}
-              onBlur={() => validateFieldOnBlur(positionName)}
+              onBlur={() => validateFieldOnBlur(PositionName)}
               fieldName="positionName"
               dialogTitle={t('Position Name')}
               placeholder={t('Position Name')}
