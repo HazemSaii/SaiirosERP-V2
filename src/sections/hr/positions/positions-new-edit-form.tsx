@@ -17,7 +17,7 @@ import { useBoolean } from 'src/hooks/use-boolean';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 import {
   RHFCheckbox,
   RHFTextField,

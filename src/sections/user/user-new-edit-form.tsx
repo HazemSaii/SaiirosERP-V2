@@ -1,24 +1,31 @@
-import { useForm, Controller } from 'react-hook-form';
-import { toast } from 'sonner';
-import { useMemo, forwardRef, useImperativeHandle } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
+import type { IUserInfo } from 'src/types/user';
+
 import { z } from 'zod';
+import { toast } from 'sonner';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo, forwardRef, useImperativeHandle } from 'react';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+
 import { useBoolean } from 'src/hooks/use-boolean';
+
 import { useTranslate } from 'src/locales';
+
 import { Iconify } from 'src/components/iconify';
-import { FormProvider, RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
-import { IUserInfo } from 'src/types/user';
+import { RHFCheckbox, FormProvider, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+
 import { useGetPasswordPolicy } from '../../actions/security/passwordPolicy';
 
 type Props = {

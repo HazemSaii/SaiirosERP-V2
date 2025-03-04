@@ -1,7 +1,10 @@
-import { useCallback } from 'react';
-import Chip from '@mui/material/Chip';
-import { chipProps, FiltersBlock, FiltersResult } from 'src/components/filters-result';
 import type { FiltersResultProps } from 'src/components/filters-result';
+
+import { useCallback } from 'react';
+
+import Chip from '@mui/material/Chip';
+
+import { chipProps, FiltersBlock, FiltersResult } from 'src/components/filters-result';
 
 // ----------------------------------------------------------------------
 

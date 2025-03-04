@@ -1,9 +1,9 @@
+import type { IDelegationItem } from 'src/types/delegation';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-
-import { IDelegationItem } from 'src/types/delegation';
 
 export function useGetDelegations(currentLang: string) {
   const config = {

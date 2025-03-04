@@ -1,22 +1,24 @@
+import type { IPersonItem } from 'src/types/perosn';
+import type { IUserDataAccess } from 'src/types/user';
+import type { IOrganizationsItem } from 'src/types/organization';
+
+import { z } from 'zod';
 import { t } from 'i18next';
 import { useForm } from 'react-hook-form';
-// Replace yupResolver with zodResolver
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { z } from 'zod';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Chip, Stack, Divider, MenuItem, Typography } from '@mui/material';
-import { FormProvider, RHFSelect, RHFAutocomplete } from 'src/components/hook-form';
+
+import { RHFSelect, FormProvider, RHFAutocomplete } from 'src/components/hook-form';
+
 import SectionComponent from 'src/sections/user/sectionComponent';
-import { IPersonItem } from 'src/types/perosn';
-import { IUserDataAccess } from 'src/types/user';
-import { IOrganizationsItem } from 'src/types/organization';
-import { useGetPersons } from '../../actions/general/person';
-import { useGetOrganizations } from '../../actions/general/organization';
+
 
 interface Section {
   name: string;

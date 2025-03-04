@@ -1,6 +1,8 @@
+import type { IUserItem } from 'src/types/user';
+import type { IRoleFunctionInfo } from 'src/types/role';
+
 import { UseAddRoleUsers, UseAddFunctionForRole } from 'src/actions/security/role';
-import { IUserItem } from 'src/types/user';
-import { IRoleFunctionInfo } from 'src/types/role';
+
 import { toast } from 'src/components/snackbar';
 
 export async function roleAdditionalData({

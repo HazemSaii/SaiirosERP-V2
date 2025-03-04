@@ -1,7 +1,7 @@
+import type { IPasswordPolicy } from 'src/types/password_policy';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
-
-import { IPasswordPolicy } from 'src/types/password_policy';
 
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
 

@@ -1,8 +1,9 @@
+import type { ICountriesItem } from 'src/types/countries';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-import { IJobsItem } from 'src/types/jobs';
-import { ICountriesItem } from 'src/types/countries';
 
 export function useGetCountries(currentLang:string) {
   const config = {

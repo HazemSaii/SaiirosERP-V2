@@ -1,7 +1,10 @@
+import type { IUserDutiesItem } from 'src/types/userDuties';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-import { IUserDutiesItem } from 'src/types/userDuties';
+
 export function useGetAllUserDuties(currentLang: string) {
   const config = {
     headers: {

@@ -1,16 +1,21 @@
+import type { IUserItem } from 'src/types/user';
+
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Container from '@mui/material/Container';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DashboardContent } from 'src/layouts/dashboard';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+
 import { formatDateTimeToISOString } from 'src/utils/general-utils';
 import { roleAdditionalData, FunctionForRoleAddData } from 'src/utils/role/role-additional-data';
-import { useGetUsers } from 'src/actions/security/user';
+
 import { useLocales, useTranslate } from 'src/locales';
+import { useGetUsers } from 'src/actions/security/user';
+import { DashboardContent } from 'src/layouts/dashboard';
 import { useGetAllApplications } from 'src/actions/shared/shared';
 import {
   useGetRole,
@@ -19,21 +24,23 @@ import {
   useGetAllFunctions,
   useGetFunctionForRole,
 } from 'src/actions/security/role';
-import { toast } from 'src/components/snackbar';
 
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons/back-button';
 import FormSkeleton from 'src/components/Form/form-skelton';
 import { useSettingsContext } from 'src/components/settings';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import ButtonSkeleton from 'src/components/buttons/button-skelton';
 import hasFormChanges from 'src/components/Form/form-data-changes';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { IUserItem } from 'src/types/user';
+import RoleUsers from '../role-users';
+import RoleFunctions from '../roles-functions';
+import RolesNewEditForm from '../roles-new-edit-form';
 
-import RoleUsers, { RoleUsersFormHandle } from '../role-users';
-import RoleFunctions, { RoleFunctionsFormHandle } from '../roles-functions';
-import RolesNewEditForm, { RoleNewEditFormHandle } from '../roles-new-edit-form';
+import type { RoleUsersFormHandle } from '../role-users';
+import type { RoleFunctionsFormHandle } from '../roles-functions';
+import type { RoleNewEditFormHandle } from '../roles-new-edit-form';
 
 // ----------------------------------------------------------------------
 type Props = {

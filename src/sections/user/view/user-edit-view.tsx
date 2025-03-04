@@ -1,10 +1,13 @@
+import type { IRoleItem } from 'src/types/role';
+import type { IUserInfo, IUserDataAccess, IUserPreferences } from 'src/types/user';
+
+import { toast } from 'sonner';
 import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
-import { toast } from 'sonner';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import { paths } from 'src/routes/paths';
@@ -14,19 +17,11 @@ import { formatDateTimeToISOString } from 'src/utils/general-utils';
 import { userDataAccess, userAdditionalData } from 'src/utils/user/user-additional-data';
 
 import { useLocales, useTranslate } from 'src/locales';
-import { useGetApprovedPersons } from 'src/actions/Hr/person';
+import { DashboardContent } from 'src/layouts/dashboard';
+import { UseGetApprovedPersons } from 'src/actions/Hr/person';
 import { useGetApprovedLocations } from 'src/actions/Hr/locations';
 import { useGetAllLanguages } from 'src/actions/settings/languages';
-import { useGetApprovedOrganizations } from 'src/actions/Hr/organizations';
-import {
-  useGetAllLookups,
-  useGetAllTimezones,
-  useGetAllLegalEnitites,
-  useGetAllBusinessUnites,
-  useGetAllAccounts,
-  useGetAllLedgers,
-  useGetAllSuppliers,
-} from 'src/actions/shared/shared';
+import { UseGetApprovedOrganizations } from 'src/actions/Hr/organizations';
 import {
   useGetUser,
   useEditUser,
@@ -34,20 +29,32 @@ import {
   useGetRolesByUser,
   useGetDataAccessByUser,
 } from 'src/actions/security/user';
+import {
+  useGetAllLookups,
+  useGetAllLedgers,
+  useGetAllAccounts,
+  useGetAllTimezones,
+  useGetAllSuppliers,
+  useGetAllLegalEnitites,
+  useGetAllBusinessUnites,
+} from 'src/actions/shared/shared';
 
 import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons/back-button';
 import FormSkeleton from 'src/components/Form/form-skelton';
 import { useSettingsContext } from 'src/components/settings';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import ButtonSkeleton from 'src/components/buttons/button-skelton';
-import { DashboardContent } from 'src/layouts/dashboard';
-import { IRoleItem } from 'src/types/role';
-import { IUserInfo, IUserPreferences, IUserDataAccess } from 'src/types/user';
-import UserRoles, { UserRolesFormHandle } from '../user-roles';
-import UserDataAccess, { UserDataAccessFormHandle } from '../user-data-access';
-import UserNewEditForm, { UserNewEditFormHandle } from '../user-new-edit-form';
-import UserPreferences, { UserPreferencesFormHandle } from '../user-preferences';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+
+import UserRoles from '../user-roles';
+import UserDataAccess from '../user-data-access';
+import UserPreferences from '../user-preferences';
+import UserNewEditForm from '../user-new-edit-form';
+
+import type { UserRolesFormHandle } from '../user-roles';
+import type { UserNewEditFormHandle } from '../user-new-edit-form';
+import type { UserDataAccessFormHandle } from '../user-data-access';
+import type { UserPreferencesFormHandle } from '../user-preferences';
 
 // ----------------------------------------------------------------------
 type Props = {
@@ -91,7 +98,7 @@ export function UserEditView({ id }: Props) {
   const { userData, rolesData, dataAccessData, loading, refetch } = useFetchUserData(id);
   const { currentLang } = useLocales();
   const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
-  const { approvedpersons, approvedpersonsLoading } = useGetApprovedPersons(currentLanguage);
+  const { approvedpersons, approvedpersonsLoading } = UseGetApprovedPersons(currentLanguage);
   const { lookups: ACCOUNT_TYPE, lookupsLoading: ACCOUNT_TYPELoading } = useGetAllLookups(
     'ACCOUNT_TYPE',
     currentLanguage
@@ -104,7 +111,7 @@ export function UserEditView({ id }: Props) {
   const { accounts, accountsLoading } = useGetAllAccounts(currentLanguage);
   const { ledgers, ledgersLoading } = useGetAllLedgers(currentLanguage);
   const { approvedorganizations, approvedorganizationsLoading } =
-    useGetApprovedOrganizations(currentLanguage);
+    UseGetApprovedOrganizations(currentLanguage);
   const { approvedlocations, approvedlocationsLoading } = useGetApprovedLocations(currentLanguage);
   const { legalEntities, legalEntitiesLoading } = useGetAllLegalEnitites(currentLanguage);
   const { businessUnites, businessUnitesLoading } = useGetAllBusinessUnites(currentLanguage);
@@ -290,7 +297,9 @@ export function UserEditView({ id }: Props) {
 
     try {
       setSubmitLoading(true);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const apiValid = await useValidateUser(data, 2);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const res = await useEditUser(data);
 
       if (res.status === 200 && apiValid.status === 200) {

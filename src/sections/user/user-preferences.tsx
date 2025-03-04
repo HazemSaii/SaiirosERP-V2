@@ -1,8 +1,10 @@
+import type { IUserPreferences } from 'src/types/user';
+
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useFormContext } from 'react-hook-form';
-import { useMemo, forwardRef, useImperativeHandle } from 'react';
 import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo, forwardRef, useImperativeHandle } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,11 +12,9 @@ import Grid from '@mui/material/Grid';
 
 import { useLocales, useTranslate } from 'src/locales';
 
-import { FormProvider, RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import { RHFCheckbox, FormProvider, RHFAutocomplete } from 'src/components/hook-form';
 
-import { IUserPreferences } from 'src/types/user';
-
-import { ILanguageItem } from '../../types/shared';
+import type { ILanguageItem } from '../../types/shared';
 
 // ----------------------------------------------------------------------
 

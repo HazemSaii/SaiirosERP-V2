@@ -1,9 +1,9 @@
+import type { IRoleItem, IRoleFunctionInfo } from 'src/types/role';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-
-import { IRoleItem, IRoleFunctionInfo } from 'src/types/role';
 
 export function useGetRoles(currentLang: string) {
   const config = {

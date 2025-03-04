@@ -1,30 +1,36 @@
+import type { IRoleItem, IRoleTableFilters, IRoleTableFilterValue } from 'src/types/role';
+
+import { varAlpha } from 'minimal-shared/utils';
 import { useState, useEffect, useCallback } from 'react';
+import { useBoolean, useSetState } from 'minimal-shared/hooks';
+
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
+import { Tab, Tabs } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import { Tab, Tabs, alpha } from '@mui/material';
-import { DashboardContent } from 'src/layouts/dashboard';
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
+
 import { paths } from 'src/routes/paths';
-import { toast } from 'src/components/snackbar';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
-import { useBoolean, useSetState } from 'minimal-shared/hooks';
+
 import { useLocales, useTranslate } from 'src/locales';
+import { DashboardContent } from 'src/layouts/dashboard';
+import { useGetAllLookups } from 'src/actions/shared/shared';
 import { useGetRoles, UseDeleteRole } from 'src/actions/security/role';
+
 import { Label } from 'src/components/label';
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import TableToolbar from 'src/components/table-toolbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import TableFiltersResult from 'src/components/table-filters-result';
-import { varAlpha } from 'minimal-shared/utils';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import {
   useTable,
   emptyRows,
@@ -36,9 +42,8 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
+
 import RolesTableRow from 'src/sections/roles/roles-table-row';
-import { IRoleItem, IRoleTableFilters, IRoleTableFilterValue } from 'src/types/role';
-import { useGetAllLookups } from 'src/actions/shared/shared';
 
 // ----------------------------------------------------------------------
 const defaultFilters: IRoleTableFilters = {
@@ -150,8 +155,7 @@ export default function RolesManagementView() {
   const render_skelton = [...Array(20)].map((_, index) => <TableSkeleton key={index} />);
 
   return (
-    <>
-      <DashboardContent>
+    <DashboardContent>
         <Container>
           {/* custom first part */}
           <CustomBreadcrumbs
@@ -306,7 +310,6 @@ export default function RolesManagementView() {
           </Card>
         </Container>
       </DashboardContent>
-    </>
   );
 }
 

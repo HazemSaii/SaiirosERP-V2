@@ -1,7 +1,9 @@
 import type { IUserItem, IUserTableFilters } from 'src/types/user';
-import { useState, useEffect, useCallback } from 'react';
-import { DashboardContent } from 'src/layouts/dashboard';
+
 import { varAlpha } from 'minimal-shared/utils';
+import { useState, useEffect, useCallback } from 'react';
+import { useBoolean, useSetState } from 'minimal-shared/hooks';
+
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -11,11 +13,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { useBoolean, useSetState } from 'minimal-shared/hooks';
+import { RouterLink } from 'src/routes/components/router-link';
+
 import { useLocales, useTranslate } from 'src/locales';
+import { DashboardContent } from 'src/layouts/dashboard';
+import { useGetAllLookups } from 'src/actions/shared/shared';
 import { useGetUsers, useDeleteUser } from 'src/actions/security/user';
+
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
@@ -33,11 +40,10 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-import { useGetAllLookups } from 'src/actions/shared/shared';
+
 import UserTableRow from '../user-table-row';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { UserTableFiltersResult } from '../user-table-filters-result';
-import { RouterLink } from 'src/routes/components/router-link';
 // ----------------------------------------------------------------------
 
 export function UserListView() {
@@ -105,6 +111,7 @@ export function UserListView() {
     async (id: string) => {
       try {
         setDeleteLoading(true);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const deletedUser = await useDeleteUser(id);
         if (deletedUser.status === 200) {
           setDeleteLoading(false);
@@ -128,8 +135,7 @@ export function UserListView() {
   );
   const render_skelton = [...Array(20)].map((_, index) => <TableSkeleton key={index} />);
   return (
-    <>
-      <DashboardContent>
+    <DashboardContent>
         <CustomBreadcrumbs
           heading={t('User Management')}
           links={[
@@ -268,7 +274,6 @@ export function UserListView() {
           />
         </Card>
       </DashboardContent>
-    </>
   );
 }
 

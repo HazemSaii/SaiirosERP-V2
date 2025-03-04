@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
+import { usePopover } from 'minimal-shared/hooks';
+
 import Box from '@mui/material/Box';
+import MenuList from '@mui/material/MenuList';
+import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
 
-import { usePopover } from 'minimal-shared/hooks';
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
 

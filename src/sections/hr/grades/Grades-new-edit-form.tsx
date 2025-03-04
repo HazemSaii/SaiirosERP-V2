@@ -15,7 +15,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 
 //---------------------------------------
 type Props = {

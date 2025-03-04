@@ -1,7 +1,9 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import { fetcher, endpoints } from '../../lib/axios';
-import { IPersonItem } from '../../types/perosn';
+
+import type { IPersonItem } from '../../types/perosn';
 
 export function useGetPersons(currentLang = 'EN') {
   const config = {

@@ -1,19 +1,23 @@
-import MenuList from '@mui/material/MenuList';
+import type { IRoleItem } from 'src/types/role';
+
+import { useBoolean, usePopover } from 'minimal-shared/hooks';
+
 import Avatar from '@mui/material/Avatar';
+import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useBoolean, usePopover } from 'minimal-shared/hooks';
-import { Divider, ListItemText, Typography } from '@mui/material';
-import { Label } from 'src/components/label';
+import { Divider, Typography, ListItemText } from '@mui/material';
+
 import { useTranslate } from 'src/locales';
+
+import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomPopover } from 'src/components/custom-popover';
 import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
-import { IRoleItem } from 'src/types/role';
 
 type Props = {
   onEditRow: VoidFunction;

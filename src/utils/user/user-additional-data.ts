@@ -1,25 +1,22 @@
 import { toast } from 'sonner';
 
+import { UseAddRoleUsers } from 'src/actions/security/role';
 import {
   useAddUserDataAccess,
   useUpdateUserDataAccess,
-  useAddUserRoles,
-  useEditUserRoles,
 } from 'src/actions/security/user';
-import { UseAddRoleUsers } from 'src/actions/security/role';
 
-import { IRoleItem } from '../../types/role';
+import type { IRoleItem } from '../../types/role';
 
 export async function userAdditionalData({
   userId,
   SelectedUserRoles,
-  userDataAccess,
   operation,
   originalUserRoles,
 }: {
   userId: string;
   SelectedUserRoles: IRoleItem[] | undefined | null;
-  userDataAccess: any;
+  userDataAccess?: any;
   operation: 'edit' | 'create';
   originalUserRoles?: IRoleItem[] | undefined;
 }) {
@@ -71,7 +68,7 @@ export async function userDataAccess(
     .map((key) => {
       let dataAccessContext = '';
       let hierarchyTopValueId: number | null = null;
-      let scope = user_DataAccess[key];
+      const scope = user_DataAccess[key];
 
       if (scope === null || scope === undefined) {
         return null;
@@ -91,7 +88,7 @@ export async function userDataAccess(
                   dataAccessContext,
                   valueOrHierarchy: user_DataAccess.personHierarchy ? 2 : 1,
                   fixedValue: personValue,
-                  hierarchyTopValueId: hierarchyTopValueId,
+                  hierarchyTopValueId,
                   includeTopValue: user_DataAccess.perTop ? 1 : 0,
                   active: 1,
                 }))
@@ -218,8 +215,10 @@ export async function userDataAccess(
     .filter((item) => item !== null);
 
   if (operation === 'create') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     await useAddUserDataAccess(userDataAccessObject);
   } else {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     await useUpdateUserDataAccess(userDataAccessObject);
   }
 }

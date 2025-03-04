@@ -1,8 +1,10 @@
+import type { IRoleItem } from 'src/types/role';
+
+import React, { useState, useEffect } from 'react';
+
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
-import React, { useState, useEffect } from 'react';
-import { IRoleItem } from 'src/types/role';
 
 // ----------------------------------------------------------------------
 

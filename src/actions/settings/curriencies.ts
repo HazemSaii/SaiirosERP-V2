@@ -1,7 +1,9 @@
+import type { ICurrenciesItem } from 'src/types/curriencies';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-import { ICurrenciesItem } from 'src/types/curriencies';
 
 export function useGetCurrencies(currentLang:string) {
   const config = {

@@ -1,21 +1,29 @@
+import type { IPasswordPolicy } from 'src/types/password_policy';
+
 import { useRef, useState, useEffect, useCallback } from 'react';
+
 import Container from '@mui/material/Container';
 import LoadingButton from '@mui/lab/LoadingButton';
+
 import { paths } from 'src/routes/paths';
-import { toast } from 'src/components/snackbar';
-import { DashboardContent } from 'src/layouts/dashboard';
+
 import { useTranslate } from 'src/locales';
+import { DashboardContent } from 'src/layouts/dashboard';
+
+import { toast } from 'src/components/snackbar';
 import BackButton from 'src/components/buttons/back-button';
 import FormSkeleton from 'src/components/Form/form-skelton';
 import { useSettingsContext } from 'src/components/settings';
+import hasFormChanges from 'src/components/Form/form-data-changes';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
-import { IPasswordPolicy } from 'src/types/password_policy';
-import PasswordPolicyEditForm, { PasswordEditFormHandle } from '../passwordPolicyEditForm';
+
+import PasswordPolicyEditForm from '../passwordPolicyEditForm';
 import {
   useGetPasswordPolicy,
   useUpdatePasswordPolicy,
 } from '../../../actions/security/passwordPolicy';
-import hasFormChanges from 'src/components/Form/form-data-changes';
+
+import type { PasswordEditFormHandle } from '../passwordPolicyEditForm';
 
 const useFetchPolicyData = (id: any) => {
   const [policyData, setPolicyData] = useState<IPasswordPolicy>();
@@ -41,7 +49,7 @@ export default function PasswordPolicyManagementView() {
   const { policyData, loading, refetch } = useFetchPolicyData('1');
   const [submitLoading, setSubmitLoading] = useState(false);
   const PasswordPolicyRef = useRef<PasswordEditFormHandle>(null);
-  const isValid = true;
+  // const isValid = true;
   const handleSubmit = async () => {
     const policy = PasswordPolicyRef.current?.formData();
     const isValid = await PasswordPolicyRef.current?.validate();
@@ -54,6 +62,7 @@ export default function PasswordPolicyManagementView() {
     } else {
       try {
         setSubmitLoading(true);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const res = await useUpdatePasswordPolicy(policy);
         if (res.status === 200) {
           setSubmitLoading(false);

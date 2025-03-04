@@ -1,26 +1,37 @@
+import type { IUserItem } from 'src/types/user';
+
 import { useRef, useState, useCallback } from 'react';
+
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import { LoadingButton } from '@mui/lab';
 import Container from '@mui/material/Container';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { DashboardContent } from 'src/layouts/dashboard';
-import { toast } from 'src/components/snackbar';
+
 import { formatDateTimeToISOString } from 'src/utils/general-utils';
 import { roleAdditionalData, FunctionForRoleAddData } from 'src/utils/role/role-additional-data';
+
 import { useLocales, useTranslate } from 'src/locales';
 import { useGetUsers } from 'src/actions/security/user';
+import { DashboardContent } from 'src/layouts/dashboard';
 import { useGetAllApplications } from 'src/actions/shared/shared';
 import { UseAddRole, useGetAllFunctions } from 'src/actions/security/role';
+
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons/back-button';
 import { useSettingsContext } from 'src/components/settings';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
-import { IUserItem } from 'src/types/user';
-import RoleUsers, { RoleUsersFormHandle } from '../role-users';
-import RoleFunctions, { RoleFunctionsFormHandle } from '../roles-functions';
-import RolesNewEditForm, { RoleNewEditFormHandle } from '../roles-new-edit-form';
+
+import RoleUsers from '../role-users';
+import RoleFunctions from '../roles-functions';
+import RolesNewEditForm from '../roles-new-edit-form';
+
+import type { RoleUsersFormHandle } from '../role-users';
+import type { RoleFunctionsFormHandle } from '../roles-functions';
+import type { RoleNewEditFormHandle } from '../roles-new-edit-form';
 // ----------------------------------------------------------------------
 type FormValues = {
   id: number;

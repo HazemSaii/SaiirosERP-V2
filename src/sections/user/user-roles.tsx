@@ -1,12 +1,16 @@
+import type { IRoleItem, IRoleTableFilters, IRoleTableFilterValue } from 'src/types/role';
+
 import { isEqual } from 'es-toolkit';
 import { useState, useEffect, forwardRef, useCallback, useImperativeHandle } from 'react';
+
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
-import { _roles } from 'src/_mock';
-import { useTranslate } from 'src/locales';
+
+import { useLocales , useTranslate } from 'src/locales';
 import { useGetRoles } from 'src/actions/security/role';
+
 import { Scrollbar } from 'src/components/scrollbar';
 import TableToolbar from 'src/components/table/table-toolbar-custom';
 import TableFiltersResults from 'src/components/table/table-filters-results';
@@ -21,8 +25,7 @@ import {
   TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
-import { IRoleItem, IRoleTableFilters, IRoleTableFilterValue } from 'src/types/role';
-import { useLocales } from 'src/locales';
+
 import UserRolesRow from './user-roles-row';
 
 // ----------------------------------------------------------------------

@@ -16,7 +16,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 import { RHFCheckbox, RHFTextField, RHFAutocomplete, schemaHelper } from 'src/components/hook-form';
 
 type Props = {
@@ -40,38 +40,35 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
     console.log('currentLocation', currentLocation);
 
     const router = useRouter();
-    const langSchema = z.object({
-      AR:
-        currentLanguage === 'ar'
-          ? z
-              .string()
-              .min(1, { message: t('Location Name is required') })
-
-              .min(3, { message: t('Invalid Location Name') })
-              .regex(
-                /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/,
-                {
-                  message: t('Invalid Location Name'),
-                }
-              )
-              .nonempty({ message: t('Location Name is required') }) // Equivalent to `required`
-          : z.string().optional(),
-
-      EN:
-        currentLanguage === 'en'
-          ? z
-              .string()
-              .min(1, { message: t('Location Name is required') })
-              .min(3, { message: t('Invalid Location Name') })
-              .regex(
-                /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/,
-                {
-                  message: t('Invalid Location Name'),
-                }
-              )
-              .nonempty({ message: t('Location Name is required') })
-          : z.string().optional(),
-    });
+     const langSchema = z.object({
+          AR:
+            currentLanguage === 'ar'
+              ? z
+                  .string()
+                  .nullable()
+                  .transform(value => (value === null || value === undefined ? '' : value)) // Convert null/undefined to ''
+                  .refine(value => value.length > 0, { message: t('Location Name is required') }) // Required validation
+                  .refine(value => value.length >= 3, { message: t('Invalid Location Name') }) // Minimum length validation
+                  .refine(
+                    value => /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/.test(value),
+                    { message: t('Invalid Location Name') }
+                  )
+              : z.string().optional(),
+        
+          EN:
+            currentLanguage === 'en'
+              ? z
+                  .string()
+                  .nullable()
+                  .transform(value => (value === null || value === undefined ? '' : value)) // Convert null/undefined to ''
+                  .refine(value => value.length > 0, { message: t('Location Name is required') }) // Required validation
+                  .refine(value => value.length >= 3, { message: t('Invalid Location Name') }) // Minimum length validation
+                  .refine(
+                    value => /^[A-Za-z\u0600-\u06FF][A-Za-z\u0600-\u06FF0-9\s]{2}[A-Za-z\u0600-\u06FF0-9\s@#$%^&*()]*$/.test(value),
+                    { message: t('Invalid Location Name') }
+                  )
+              : z.string().optional(),
+        });
 
     const isPending = currentLocation?.approvalStatus === 'PENDING';
     const isEdit = operation === 'edit';
@@ -80,7 +77,7 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
       locationName: langSchema, // approvalStatus: z.string().min(1, { message: t('Approval Status is required') }),
       countryCode: schemaHelper.nullableInput(z.string().min(1, { message: t('Country is required') }),{message:t('Country is required')}),
       // city: z.string().min(1, { message: t('City is required') }),
-      addressLine1: z.string().min(1, { message: t('Address Line 1 is required') }),
+      addressLine1:schemaHelper.nullableInput( z.string().min(1, { message: t('Address Line 1 is required') }),{message:t("Address Line 1 is required")}),
       addressLine2: z
         .string()
         .nullable()

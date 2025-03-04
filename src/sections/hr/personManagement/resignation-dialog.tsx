@@ -3,7 +3,7 @@ import type { DialogProps } from '@mui/material/Dialog';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import React, { useMemo } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 
 import Button from '@mui/material/Button';
@@ -75,7 +75,7 @@ export default function ResignationDialog({
     []
   );
   const methods = useForm({
-    resolver: yupResolver(NewSchema),
+    resolver: zodResolver(NewSchema),
     defaultValues,
   });
   const { handleSubmit, trigger } = methods;

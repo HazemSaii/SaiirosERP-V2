@@ -15,7 +15,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 import {
   RHFCheckbox,
   RHFTextField,
@@ -96,9 +96,9 @@ const JobsNewEditForm = forwardRef<JobsNewEditFormHandle, Props>(
       jobName: langSchema,
       approvalStatus: z.string().min(1,{message:(t('Approval Status is required'))}),
       jobFamily: schemaHelper.nullableInput(
-        z.union([z.string(), z.number(), z.null()]).refine(val => val !== null && String(val).trim() !== "", {
+        z.union([z.string(), z.number()]).refine(val => val !== null && String(val).trim() !== "", {
           message: t("Job Family is required"),
-        })
+        }),{message: t("Job Family is required")}
       ),
             active: z.boolean().optional(), // Optional boolean value
   });

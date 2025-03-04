@@ -1,7 +1,9 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
+
 import { fetcher, endpoints } from '../../lib/axios';
-import { IOrganizationsItem } from '../../types/organization';
+
+import type { IOrganizationsItem } from '../../types/organization';
 
 export function useGetOrganizations() {
   const URL = endpoints.organization.list;

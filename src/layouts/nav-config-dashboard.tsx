@@ -65,7 +65,9 @@ export function getNavData(): any {
         return null;
     }
   };
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { menus, menusLoading, menusValidating } = useGetMenus('EN');
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { t } = useTranslate();
   const generateNavItems = (item: any) => {
     const children = item.childs.map((child: any) => ({
@@ -83,6 +85,7 @@ export function getNavData(): any {
 // ----------------------------------------------------------------------
 
 export function navData(): NavSectionProps['data'] {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { t } = useTranslate();
 
   const getMenuIcon = (entryName: string): JSX.Element | null => {
@@ -106,6 +109,7 @@ export function navData(): NavSectionProps['data'] {
         return null;
     }
   };
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { menus, menusLoading, menusValidating } = useGetMenus('EN');
   const generateNavItems = (item: any) => {
     const children = item.childs.map((child: any) => ({
@@ -120,6 +124,7 @@ export function navData(): NavSectionProps['data'] {
     };
   };
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const data: any = useMemo(() => {
     if (menusLoading || !menus) {
       return [{ subheader: '', items: [] }];

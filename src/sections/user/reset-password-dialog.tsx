@@ -1,23 +1,28 @@
-import * as Yup from 'yup';
+import type { DialogProps } from '@mui/material/Dialog';
+
+import * as z from 'zod';
+import { toast } from 'sonner';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { enqueueSnackbar } from 'notistack';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useBoolean } from 'minimal-shared/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
 import { Box, Card, Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import InputAdornment from '@mui/material/InputAdornment';
-import Dialog, { DialogProps } from '@mui/material/Dialog';
-import { useGetPasswordPolicy } from '../../actions/security/passwordPolicy';
-import { useBoolean } from 'minimal-shared/hooks';
+
 import { useTranslate } from 'src/locales';
-import { useResetPassword } from 'src/api/security/user';
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { IUserItem } from 'src/types/user';
+import { useResetPassword } from 'src/actions/security/user';
+
+import { Iconify } from 'src/components/iconify';
+import { FormProvider, RHFTextField } from 'src/components/hook-form';
+
+import { useGetPasswordPolicy } from '../../actions/security/passwordPolicy';
 
 type Props = DialogProps & {
   open: boolean;
@@ -43,74 +48,88 @@ export default function ResetPasswordDialog({ row, open, onClose }: Props) {
     }
   };
   const defaultPasswordRules = {
-    minLength: Yup.string().min(8, t('Password must be at least 8 characters long')),
-    minNumbers: Yup.string().matches(
-      /(.*[0-9].*){1}/,
-      t('Password must contain at least one number')
-    ),
-    minUpperLetters: Yup.string().matches(
-      /(.*[A-Z].*){1}/,
-      t('Password must contain at least one uppercase letter')
-    ),
-    minLowLetters: Yup.string().matches(
-      /(.*[a-z].*){1}/,
-      t('Password must contain at least one lowercase letter')
-    ),
-    minSpecialCharacters: Yup.string().matches(
-      /(.*[^a-zA-Z0-9].*){1}/,
-      t('Password must contain at least one special character')
-    ),
-    repeatCharacters: Yup.string().matches(
-      /^(?!.*(.)\1).*/,
-      t('Password must not contain repeated characters')
-    ),
+    minLength: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Password length must be a positive number')),
+    minNumbers: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of numbers must be a positive number')),
+    minUpperLetters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of uppercase letters must be a positive number')),
+    minLowLetters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of lowercase letters must be a positive number')),
+    minSpecialCharacters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of special characters must be a positive number')),
+    acceptRepeatCharacters: z.boolean(),
+    passwordExpiryDate: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Password expiry days must be a positive number')),
   };
-
   const passwordRules = useMemo(() => {
     if (policyLoading || !policy) {
       return defaultPasswordRules;
     }
-    return {
-      minLength: Yup.string().min(
-        Number(policy.minLength),
-        t(`Password must be at least ${policy.minLength} characters long`)
-      ),
-      minNumbers: Yup.string().matches(
-        new RegExp(`(.*[0-9].*){${policy.minNumbers}}`),
-        t(`Password must contain at least ${policy.minNumbers} number(s)`)
-      ),
-      minUpperLetters: Yup.string().matches(
-        new RegExp(`(.*[A-Z].*){${policy.minUpperLetters}}`),
-        t(`Password must contain at least ${policy.minUpperLetters} uppercase letter(s)`)
-      ),
-      minLowLetters: Yup.string().matches(
-        new RegExp(`(.*[a-z].*){${policy.minLowLetters}}`),
-        t(`Password must contain at least ${policy.minLowLetters} lowercase letter(s)`)
-      ),
-      minSpecialCharacters: Yup.string().matches(
-        new RegExp(`(.*[^a-zA-Z0-9].*){${policy.minSpecialCharacters}}`),
-        t(`Password must contain at least ${policy.minSpecialCharacters} special character(s)`)
-      ),
-      repeatCharacters: policy.acceptRepeatCharacters
-        ? Yup.string()
-        : Yup.string().matches(
-            /^(?!.*(.)\1).*/,
-            t('Password must not contain repeated characters')
-          ),
-    };
+    return { ...defaultPasswordRules };
   }, [policyLoading, policy]);
-  const NewUserSchema = Yup.object().shape({
-    newPassword: Yup.string()
-      .required(t('Password is required'))
-      .concat(passwordRules.minLength)
-      .concat(passwordRules.minNumbers)
-      .concat(passwordRules.minUpperLetters)
-      .concat(passwordRules.minLowLetters)
-      .concat(passwordRules.minSpecialCharacters)
-      .concat(passwordRules.repeatCharacters),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('newPassword'), ''], t('Passwords must match'))
-      .required(t('Confirm Password is required')),
+  const NewUserSchema = z.object({
+    minLength: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Password length must be a positive number')),
+    minNumbers: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of numbers must be a positive number')),
+    minUpperLetters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of uppercase letters must be a positive number')),
+    minLowLetters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of lowercase letters must be a positive number')),
+    minSpecialCharacters: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Number of special characters must be a positive number')),
+    acceptRepeatCharacters: z.boolean(),
+    passwordExpiryDate: z
+      .string()
+      .nonempty(t('This field is required'))
+      .transform((val) => (val === '' ? 0 : Number(val)))
+      .refine((val) => !isNaN(val), t('Must be a valid number'))
+      .refine((val) => val >= 0, t('Password expiry days must be a positive number')),
   });
   const { id } = row;
   const defaultValues = useMemo(
@@ -122,7 +141,7 @@ export default function ResetPasswordDialog({ row, open, onClose }: Props) {
     []
   );
   const methods = useForm({
-    resolver: yupResolver(NewUserSchema),
+    resolver: zodResolver(NewUserSchema),
     defaultValues,
   });
   const { handleSubmit, trigger } = methods;
@@ -130,15 +149,14 @@ export default function ResetPasswordDialog({ row, open, onClose }: Props) {
   const onSubmit = handleSubmit(async () => {
     const data = formData();
     try {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const res = await useResetPassword(data);
       if (res.status === 200) {
-        enqueueSnackbar(t('Password Changed successfully!'));
+        toast.success(t('Password Changed successfully!'));
         onClose();
       }
-    } catch (error) {
-      enqueueSnackbar(error.message, {
-        variant: 'error',
-      });
+    } catch (e) {
+      toast.error((e as Error).message || 'An error occurred');
     }
   });
   const validateFieldOnBlur = async (name: any) => {

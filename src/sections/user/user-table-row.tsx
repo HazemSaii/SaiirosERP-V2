@@ -1,19 +1,25 @@
 import type { IUserItem } from 'src/types/user';
+
 import { useBoolean, usePopover } from 'minimal-shared/hooks';
+
 import Avatar from '@mui/material/Avatar';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Divider, Typography, ListItemText } from '@mui/material';
+
+import { useTranslate } from 'src/locales';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomPopover } from 'src/components/custom-popover';
-import { useTranslate } from 'src/locales';
-import { Divider, ListItemText, Typography } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
 import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
+
+import ResetPasswordDialog from './reset-password-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -128,7 +134,7 @@ export default function UserTableRow({ row, onEditRow, onDeleteRow, deleteLoadin
         onClose={recordInfo.onFalse}
       />
 
-      {/* <ResetPasswordDialog row={row} open={resetPassword.value} onClose={resetPassword.onFalse} /> */}
+      <ResetPasswordDialog row={row} open={resetPassword.value} onClose={resetPassword.onFalse} />
 
       <ConfirmDialog
         open={confirm.value}

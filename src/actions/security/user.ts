@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
 
-import { IUserItem } from '../../types/user';
-import { IRoleItem } from '../../types/role';
+import type { IUserItem } from '../../types/user';
+import type { IRoleItem } from '../../types/role';
 
 export function useGetUsers() {
   const URL = endpoints.user.list;

@@ -1,14 +1,19 @@
+import type { IPasswordPolicy } from 'src/types/password_policy';
+
+import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forwardRef, useImperativeHandle } from 'react';
-import { toast } from 'src/components/snackbar';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
+
 import { useTranslate } from 'src/locales';
-import { FormProvider, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import { IPasswordPolicy } from 'src/types/password_policy';
-import * as z from 'zod';
+
+import { toast } from 'src/components/snackbar';
+import { RHFCheckbox, FormProvider, RHFTextField } from 'src/components/hook-form';
+
 
 export interface PasswordEditFormHandle {
   submit: () => void;
@@ -67,7 +72,7 @@ const PasswordPolicyEditForm = forwardRef<PasswordEditFormHandle, { policyData?:
         minUpperLetters: policyData?.minUpperLetters?.toString() || '0',
         minLowLetters: policyData?.minLowLetters?.toString() || '0',
         minSpecialCharacters: policyData?.minSpecialCharacters?.toString() || '0',
-        acceptRepeatCharacters: policyData?.acceptRepeatCharacters === 1 ? true : false || false,
+        acceptRepeatCharacters: policyData?.acceptRepeatCharacters === 1 ? true :  false,
         passwordExpiryDate: policyData?.passwordExpiryDate?.toString() || '0',
       },
     });
