@@ -23,7 +23,7 @@ export function useGetAllLanguages(currentLang: string) {
       languagesValidating: isValidating,
       refetch: () => mutate(),
     }),
-    [data?.content, error, isLoading, isValidating, mutate]
+    [data, error, isLoading, isValidating, mutate]
   );
   return memoizedValue;
 }

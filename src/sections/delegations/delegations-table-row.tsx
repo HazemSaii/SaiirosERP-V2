@@ -1,21 +1,21 @@
+import type { IDelegationItem } from 'src/types/delegation';
+
 import React from 'react';
+import { useBoolean, usePopover } from 'minimal-shared/hooks';
+
 import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import LoadingButton from '@mui/lab/LoadingButton';
 import ListItemText from '@mui/material/ListItemText';
+
 import { useTranslate } from 'src/locales';
-import { useBoolean, usePopover } from 'minimal-shared/hooks';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
-import { CustomPopover } from 'src/components/custom-popover';
 import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
-
-import { IDelegationItem } from 'src/types/delegation';
 
 type Props = {
   onEditRow: VoidFunction;

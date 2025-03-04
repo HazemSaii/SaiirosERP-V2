@@ -3,9 +3,9 @@ import type {
   IDelegationTableFilters,
   IDelegationTableFilterValue,
 } from 'src/types/delegation';
-import { useState, useEffect, useCallback } from 'react';
-import { DashboardContent } from 'src/layouts/dashboard';
+
 import { varAlpha } from 'minimal-shared/utils';
+import { useState, useEffect, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
@@ -23,18 +23,18 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { useLocales, useTranslate } from 'src/locales';
+import { DashboardContent } from 'src/layouts/dashboard';
 import { useGetAllLookups } from 'src/actions/shared/shared';
 import { useGetDelegations, UseDeleteDelegation } from 'src/actions/security/delegation';
 
 import { Label } from 'src/components/label';
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { toast } from 'src/components/snackbar';
 import TableToolbar from 'src/components/table-toolbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
 import { useSettingsContext } from 'src/components/settings';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import TableFiltersResult from 'src/components/table-filters-result';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import {
   useTable,
   emptyRows,

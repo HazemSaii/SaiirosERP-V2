@@ -1,27 +1,32 @@
+import type { IDelegationInfo } from 'src/types/delegation';
+
+import { toast } from 'sonner';
 import { useRef, useState, useCallback } from 'react';
+
 import { Container } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
 import { Tab, Tabs } from '@mui/material';
+
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { toast } from 'sonner';
-import { DashboardContent } from 'src/layouts/dashboard';
 
-import { useGetUsers } from 'src/actions/security/user';
+import { formatDateTimeToISOString } from 'src/utils/general-utils';
+
 import { useLocales, useTranslate } from 'src/locales';
+import { useGetUsers } from 'src/actions/security/user';
+import { DashboardContent } from 'src/layouts/dashboard';
 import { UseAddDelegation } from 'src/actions/security/delegation';
 import { useGetAllLookups, useGetAllApplications } from 'src/actions/shared/shared';
 
-import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons';
+import { Iconify } from 'src/components/iconify';
 import FormSkeleton from 'src/components/Form/form-skelton';
 import { useSettingsContext } from 'src/components/settings';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { IDelegationInfo } from 'src/types/delegation';
+import DelegationNewEditForm from '../delegation-new-edit-form';
 
-import DelegationNewEditForm, { DelegationNewEditFormHandle } from '../delegation-new-edit-form';
-import { formatDateTimeToISOString } from 'src/utils/general-utils';
+import type { DelegationNewEditFormHandle } from '../delegation-new-edit-form';
 
 //------------------------------------------------------
 export default function DelegationsCreateView() {

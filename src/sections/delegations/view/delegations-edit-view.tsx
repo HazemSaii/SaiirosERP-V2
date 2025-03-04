@@ -1,6 +1,7 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import type { IDelegationInfomap } from 'src/types/delegation';
+
 import { toast } from 'sonner';
-import { DashboardContent } from 'src/layouts/dashboard';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import { Container } from '@mui/system';
 import { LoadingButton } from '@mui/lab';
@@ -11,21 +12,22 @@ import { useRouter } from 'src/routes/hooks';
 
 import { formatDateTimeToISOString } from 'src/utils/general-utils';
 
-import { useGetUsers } from 'src/actions/security/user';
 import { useLocales, useTranslate } from 'src/locales';
+import { useGetUsers } from 'src/actions/security/user';
+import { DashboardContent } from 'src/layouts/dashboard';
 import { useGetAllLookups, useGetAllApplications } from 'src/actions/shared/shared';
 import { useGetDelegation, UseEditDelegation } from 'src/actions/security/delegation';
 
-import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons';
+import { Iconify } from 'src/components/iconify';
 import FormSkeleton from 'src/components/Form/form-skelton';
-import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import hasFormChanges from 'src/components/Form/form-data-changes';
 import ButtonSkeleton from 'src/components/buttons/button-skelton';
+import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { IDelegationInfomap } from 'src/types/delegation';
+import DelegationNewEditForm from '../delegation-new-edit-form';
 
-import DelegationNewEditForm, { DelegationNewEditFormHandle } from '../delegation-new-edit-form';
+import type { DelegationNewEditFormHandle } from '../delegation-new-edit-form';
 
 type Props = {
   id: string;
