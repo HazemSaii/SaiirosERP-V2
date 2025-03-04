@@ -18,7 +18,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import { ActionsButton } from 'src/components/buttons';
-import { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import { RHFCheckbox, RHFTextField, RHFAutocomplete, schemaHelper } from 'src/components/hook-form';
 
 type Props = {
   currentPersonal?: IPesonalInfo;
@@ -72,28 +72,42 @@ const PersonalNewEditForm = forwardRef<PersonalNewEditFormHandle, Props>(
     const router = useRouter();
 
     const iscreate = operation === 'create';
-  //   const emailValidation = () =>
-  //     Yup.string().when([], {
-  //       is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)), // ✅ Validate only when this condition is met
-  //       then: (schema) =>
-  //         schema
-  //           .nullable() // Allows null values
-  //           .notRequired() // Not required
-  //           .test(
-  //             'is-valid-email',
-  //             t(`Invalid email format`),
-  //             (value) => {
-  //               if (!value) return true; // Skip validation if empty (null or "")
-  //               return /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/.test(value); // Validate if not empty
-  //             }
-  //           ),
-  //       otherwise: (schema) => schema.notRequired(),
-  //     });
+    // const emailValidation = () =>
+    //   Yup.string().when([], {
+    //     is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)), // ✅ Validate only when this condition is met
+    //     then: (schema) =>
+    //       schema
+    //         .nullable() // Allows null values
+    //         .notRequired() // Not required
+    //         .test(
+    //           'is-valid-email',
+    //           t(`Invalid email format`),
+    //           (value) => {
+    //             if (!value) return true; // Skip validation if empty (null or "")
+    //             return /^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/.test(value); // Validate if not empty
+    //           }
+    //         ),
+    //     otherwise: (schema) => schema.notRequired(),
+    //   });
     
-   
+
+const emailValidation = () => {
+  const shouldValidate = !isNotChanged && (isFieldsEnabled || iscreate);
+
+  return shouldValidate
+    ? z
+        .string()
+        .trim()
+        .email({ message: t("Invalid email format") }) // ✅ Validate email format
+        .or(z.literal("")) // ✅ Allow empty string
+        .nullable() // ✅ Allow null
+    : z.string().optional();
+};
+
+
     
-  //   const NewPersonalSchema = Yup.object().shape({
-  //  // disabled validation of all of this = {isNotChanged || !isFieldsEnabled && !iscreate}
+    const NewPersonalSchema = z.object({
+   // disabled validation of all of this = {isNotChanged || !isFieldsEnabled && !iscreate}
 
   //  approvalStatus: Yup.string().when([], {
   //   is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
@@ -101,99 +115,95 @@ const PersonalNewEditForm = forwardRef<PersonalNewEditFormHandle, Props>(
   //   otherwise: (schema) => schema.notRequired(),
   // }),
 
-  // firstName: Yup.string().when([], {
+  // firstName: z.string().when([], {
   //   is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
   //   then: (schema) => schema.required(t('First Name is required')),
   //   otherwise: (schema) => schema.notRequired(),
   // }),
+  firstName:isNotChanged || (!isFieldsEnabled && !iscreate)
+  ?z.union([z.string(), z.number(), z.null()])
+  .transform((val) => (val === null ? "" : String(val)))
+  .optional()
+  : z.union([z.string(), z.number()])
+  .transform((val) => String(val))
+  .refine((val) => val.trim().length > 0, {
+    message: t("First Name is required"),
+  }).refine((val) => val.trim().length > 2, {
+    message: t("InValid First Name"),
+  }),
+  lastName:isNotChanged || (!isFieldsEnabled && !iscreate)
+  ?z.union([z.string(), z.number(), z.null()])
+  .transform((val) => (val === null ? "" : String(val)))
+  .optional()
+  : z.union([z.string(), z.number()])
+  .transform((val) => String(val))
+  .refine((val) => val.trim().length > 0, {
+    message: t("Last Name is required"),
+  })
+  .refine((val) => val.trim().length > 2, {
+    message: t("InValid Last Name"),
+  }),
+  gender:isNotChanged || (!isFieldsEnabled && !iscreate)
+  ?z.union([z.string(), z.number(), z.null()])
+  .transform((val) => (val === null ? "" : String(val)))
+  .optional()
+  :schemaHelper.nullableInput( z.union([z.string(), z.number()])
+  .transform((val) => String(val))
+  .refine((val) => val.trim().length > 0, {
+    message: t("Gender is required"),
+  }), {
+    message: t("Gender is required"),
+  }),
 
-  // lastName: Yup.string().when([], {
-  //   is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
-  //   then: (schema) => schema.required(t('Last Name is required')),
-  //   otherwise: (schema) => schema.notRequired(),
-  // }),
+  
+  
 
-  // dateOfBirth: Yup.mixed<any>().nullable(),
+  dateOfBirth: z
+  .preprocess(
+    (val:any) => (val === "" ? null : new Date(val)), // Convert string to Date or null
+    z.date()
+      .max(new Date(), { message: t("Date of Birth must be before today") }) // Ensure date is before today
+  )
+  .nullable(),
 
-  // gender: Yup.string().when([], {
-  //   is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
-  //   then: (schema) => schema.required(t('Gender is required')),
-  //   otherwise: (schema) => schema.notRequired(),
-  // }),
+  
 
-  // personalEmail: emailValidation(),
-  // workEmail: emailValidation(),
+  personalEmail: emailValidation(),
+workEmail: emailValidation(),
 
-  //     // employeeNumber: Yup.string(),
-  //     // secondName: Yup.string(),
-  //     // thirdName: Yup.string().nullable(),
-  //     // alternativeFirstName: Yup.string().nullable(),
-  //     // alternativeSecondName: Yup.string().nullable(),
-  //     // alternativeThirdName: Yup.string().nullable(),
-  //     // alternativeLastName: Yup.string().nullable(),
-  //     // religion: Yup.string().nullable(),
-  //     // nationalityCode: Yup.string(),
-  //     // maritalStatus: Yup.string(),
-  //     // highestEducationLevel: Yup.string(),
+      // employeeNumber: Yup.string(),
+      // secondName: Yup.string(),
+      // thirdName: Yup.string().nullable(),
+      // alternativeFirstName: Yup.string().nullable(),
+      // alternativeSecondName: Yup.string().nullable(),
+      // alternativeThirdName: Yup.string().nullable(),
+      // alternativeLastName: Yup.string().nullable(),
+      // religion: Yup.string().nullable(),
+      // nationalityCode: Yup.string(),
+      // maritalStatus: Yup.string(),
+      // highestEducationLevel: Yup.string(),
      
-  //     // passportNumber: Yup.string().nullable(),
-  //     // workMobile: Yup.string(),
-  //     // personalMobile: Yup.string().nullable(),
-  //     // nationalId: Yup.string(),
-  //   });
+      // passportNumber: Yup.string().nullable(),
+      // workMobile: Yup.string(),
+      // personalMobile: Yup.string().nullable(),
+      // nationalId: Yup.string(),
+    });
 
 
 // Email Validation Function
-const emailValidation = () =>
-  z
-    .string()
-    .email(t('Invalid email format'))
-    .nullable()
-    .optional()
-    .refine(
-      (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
-      { message: t('Email is required') }
-    );
+// const emailValidation = () =>
+//   z
+//     .string()
+//     .email(t('Invalid email format'))
+//     .nullable()
+//     .optional()
+//     .refine(
+//       (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
+//       { message: t('Email is required') }
+//     );
 
 // New Personal Schema
-const NewPersonalSchema = z.object({
-  approvalStatus: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
-      { message: t('Approval Status is required') }
-    ),
 
-  firstName: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
-      { message: t('First Name is required') }
-    ),
-
-  lastName: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
-      { message: t('Last Name is required') }
-    ),
-
-  dateOfBirth: z.string().nullable().optional(), // Adjust format as needed
-
-  gender: z
-    .string()
-    .optional()
-    .refine(
-      (val) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) || !!val,
-      { message: t('Gender is required') }
-    ),
-
-  personalEmail: emailValidation(),
-  workEmail: emailValidation(),
-});
 
 
     const defaultValues: any = useMemo(

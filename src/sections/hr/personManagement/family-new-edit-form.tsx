@@ -308,7 +308,13 @@ const FamilyNewEditForm = forwardRef<FamilyNewEditFormHandle, Props>(
 
     const validateForm = async () => {
       try {
-        const isValid = await methods.trigger();
+        const isValid = await methods.trigger(undefined, { shouldFocus: true });
+    
+        if (!isValid) {
+          const errors = methods.formState.errors;
+          console.error("Validation Errors:", errors);
+        }
+    
         return isValid;
       } catch (error) {
         console.error('Form validation error:', error);

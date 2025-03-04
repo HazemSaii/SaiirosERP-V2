@@ -18,7 +18,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import { ActionsButton } from 'src/components/buttons';
-import { RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import { RHFTextField, RHFAutocomplete, schemaHelper } from 'src/components/hook-form';
 
 import HistoryDialog from './history-dialog';
 
@@ -218,7 +218,7 @@ const EmploymentNewEditForm = forwardRef<EmploymentNewEditFormHandle, Props>(
               message: t('Start date must be today or later'),
             });
           }
-        }),
+        }), 
     
       // endDate: schemaHelper.nullableInput(z.date()).superRefine((date, ctx) => {
       //   if (
@@ -234,15 +234,19 @@ const EmploymentNewEditForm = forwardRef<EmploymentNewEditFormHandle, Props>(
       //   }
       // }),
     
-      actionCode: z
-        .string()
-        .min(1, t('Action is required'))
-        .optional(),
+      gender:isNotChanged || (!isFieldsEnabled && !iscreate)
+      ?z.union([z.string(), z.number(), z.null()])
+      .transform((val) => (val === null ? "" : String(val)))
+      .optional()
+      :schemaHelper.nullableInput( z.union([z.string(), z.number()])
+      .transform((val) => String(val))
+      .refine((val) => val.trim().length > 0, {
+        message: t("Action is required"),
+      }), {
+        message: t("Action is required"),
+      }),
     
-      approvalStatus: z
-        .string()
-        .min(1, t('Approval Status is required'))
-        .optional(),
+     
     })
     const defaultValues: any = useMemo(
       () => ({
@@ -298,7 +302,13 @@ const EmploymentNewEditForm = forwardRef<EmploymentNewEditFormHandle, Props>(
 
     const validateForm = async () => {
       try {
-        const isValid = await trigger();
+        const isValid = await methods.trigger(undefined, { shouldFocus: true });
+    
+        if (!isValid) {
+          const errors = methods.formState.errors;
+          console.error("Validation Errors:", errors);
+        }
+    
         return isValid;
       } catch (error) {
         console.error('Form validation error:', error);

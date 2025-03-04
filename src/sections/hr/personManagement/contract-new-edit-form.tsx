@@ -129,94 +129,71 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
     };
     
     
-    // const NewContractSchema = Yup.object().shape({
-    //   startDate: Yup.mixed<Date>().when([], {
-    //     is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
-    //     then: (schema) => {
-    //       let newSchema = schema.required(t('Start date is required'));
-          
-    //       if (iscreate) {
-    //         newSchema = newSchema.test(
-    //           'is-future-date',
-    //           t('Start date must be today or later'),
-    //           (value) => !value || new Date(value) >= new Date(new Date().setHours(0, 0, 0, 0))
-    //         );
-    //       }
-          
-    //       return newSchema;
-    //     },
-    //     otherwise: (schema) => schema.notRequired(),
-    //   }),
-    //   endDate: Yup.mixed<any>()
-    //     .nullable()
-    //     .when(['startDate'], {
-    //       is: (startDate:any) => !(isNotChanged || (!isFieldsEnabled && !iscreate)) && !!startDate,
-    //       then: (schema) =>
-    //         schema.test(
-    //           'date-min',
-    //           t('End Date must be later than Start Date'),
-    //           (value, { parent }) =>
-    //             !value || (value && parent.startDate && new Date(value) > new Date(parent.startDate))
-    //         ),
-    //       otherwise: (schema) => schema.notRequired(),
-    //     }),
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today's date to remove time
     
-    //   employmentType: Yup.string().when([], {
-    //     is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
-    //     then: (schema) => schema.required(t('Employment Type is required')),
-    //     otherwise: (schema) => schema.notRequired(),
-    //   }),
+    const NewContractSchema = ( )=>
+      z.object({
+        // startDate: !isNotChanged && (isFieldsEnabled || iscreate)
+        //   ? z.union([z.string(), z.date()])
+        //   .refine((val) => !!val, {
+        //     message: t("Start date is required"),
+        //   })
+        //   .transform((val) => (typeof val === "string" ? new Date(val) : val))
+        //   .optional()
+        //   : z.string().optional(), // Optional otherwise
+        //   endDate: !isNotChanged && (isFieldsEnabled || iscreate)
+        //   ? z.union([z.string(), z.date(), z.null()])
+        //   .nullable()
+        //   .transform((val) => (val ? new Date(val) : null))
+        //   .optional()
+        //   : z.string().optional(), // Optional otherwise
     
-    //   approvalStatus: Yup.string().when([], {
-    //     is: () => !(isNotChanged || (!isFieldsEnabled && !iscreate)),
-    //     then: (schema) => schema.required(t('Approval Status is required')),
-    //     otherwise: (schema) => schema.notRequired(),
-    //   }),
-    
-    //   probationEndDate: Yup.string().nullable(),
-    //   finalProcessDate: Yup.mixed<any>().nullable(),
-    //   // notes: Yup.string().nullable(),
-    //   // probationLength: Yup.string(),
-    //   // probationUnits: Yup.string(),
-    //   // employeeNoticeLength: Yup.string(),
-    //   // employerNoticeLength: Yup.string(),
-    //   // employerNoticeUnits: Yup.string(),
-    //   // employeeNoticeUnits: Yup.string(),
-    //   // reason: Yup.string(),
-    // });
-    const NewContractSchema = z.object({
-      startDate: z
-        .union([z.date(), z.string().transform((val) => new Date(val))])
-        .refine(
-          (date) => isNotChanged || (!isFieldsEnabled && !iscreate) || !!date,
-          { message: t('Start date is required') }
+        startDate: !isNotChanged && (isFieldsEnabled || iscreate)
+      ?z
+      .preprocess(
+        (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
+        z.date().refine(
+          (value) => !iscreate || value >= today, // If `isCreate`, must be today or later
+          { message: t("Start date must be today or later") }
         )
-        .refine(
-          (date) =>
-            !iscreate || !date || new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)),
-          { message: t('Start date must be today or later') }
-        ),
+      )
+  : z.date().optional(),
+
+    endDate:!isNotChanged && (isFieldsEnabled || iscreate)
+    ?z.union([z.string(), z.date()])
+      .nullable()
+      .refine(
+        (value) => {
+          if (!value) return true; // Allow null/empty
+          return new Date(value) > new Date();
+        },
+        {
+          message: t("End Date must be later than Start Date"),
+          path: ["endDate"],
+        }
+      )
+      .optional(): z.date().optional(),
+        employmentType:isNotChanged || (!isFieldsEnabled && !iscreate)
+        ?z.union([z.string(), z.number(), z.null()])
+        .transform((val) => (val === null ? "" : String(val)))
+        .optional()
+        :schemaHelper.nullableInput( z.union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim().length > 0, {
+          message: t("Employment Type is required"),
+        }), {
+          message: t("Employment Type is required"),
+        }),
+       
+        
+        probationEndDate: z.any().nullable(),
+        finalProcessDate: z.any().nullable(),
+      });
     
-      // endDate: schemaHelper.nullableInput(z.date()).refine(
-      //   (date, ctx) =>
-      //     !date ||
-      //     (ctx.parent.startDate && new Date(date) > new Date(ctx.parent.startDate)),
-      //   { message: t('End Date must be later than Start Date') }
-      // ),
     
-      employmentType: z
-        .string()
-        .min(1, t('Employment Type is required'))
-        .optional(),
     
-      approvalStatus: z
-        .string()
-        .min(1, t('Approval Status is required'))
-        .optional(),
-    
-      probationEndDate: schemaHelper.nullableInput(z.string()),
-      finalProcessDate: schemaHelper.nullableInput(z.date()),
-    });
     
     const TABLE_HEAD = [
       { id: 'startDate', label: t('Start Date') },
@@ -253,7 +230,7 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
     );
 
     const methods = useForm<any>({
-      resolver: zodResolver(NewContractSchema),
+      resolver: zodResolver(NewContractSchema()),
       defaultValues,
     });
 
@@ -297,7 +274,13 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
 
     const validateForm = async () => {
       try {
-        const isValid = await trigger();
+        const isValid = await methods.trigger(undefined, { shouldFocus: true });
+    
+        if (!isValid) {
+          const errors = methods.formState.errors;
+          console.error("Validation Errors:", errors);
+        }
+    
         return isValid;
       } catch (error) {
         console.error('Form validation error:', error);
