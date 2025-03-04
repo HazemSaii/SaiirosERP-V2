@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-
 export function useGetLocations(currentLang: string) {
   const config = {
     headers: {
@@ -14,7 +13,7 @@ export function useGetLocations(currentLang: string) {
   const { data, isLoading, error, isValidating, mutate } = useSWR([URL, config], fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({
@@ -38,7 +37,7 @@ export function useGetApprovedLocations(currentLang: string) {
   const { data, isLoading, error, isValidating, mutate } = useSWR([URL, config], fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({
@@ -62,13 +61,12 @@ export function UseEditLocation(location: any) {
   return res;
 }
 
-export function useGetLocation(locationId: number) {
-  
+export function UseGetLocation(locationId: number) {
   const URL = locationId ? [endpoints.location.details, { params: { locationId } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({
@@ -89,7 +87,7 @@ export function UseDeleteLocation(locationId: string) {
   return res;
 }
 
-export function UseValidateLocation(location:any,operation:number){
+export function UseValidateLocation(location: any, operation: number) {
   const res = axiosInstance.post(`${endpoints.location.validate}?operation=${operation}`, location);
   return res;
 }

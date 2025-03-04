@@ -15,7 +15,7 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useLocales, useTranslate } from 'src/locales';
 import { useGetAllCountries } from 'src/actions/shared/shared';
-import { useGetLocation, UseEditLocation, UseValidateLocation } from 'src/actions/Hr/locations';
+import { UseGetLocation, UseEditLocation, UseValidateLocation } from 'src/actions/Hr/locations';
 
 import { Iconify } from 'src/components/iconify';
 import BackButton from 'src/components/buttons/back-button';
@@ -35,7 +35,7 @@ type Props = {
 const useFetchLocationData = (locationId: any) => {
   const [locationData, setLocationData] = useState<ILocationsInfo>();
   const [loading, setLoading] = useState<any>(true);
-  const { location, locationValidating, refetch: refetchLocation } = useGetLocation(locationId);
+  const { location, locationValidating, refetch: refetchLocation } = UseGetLocation(locationId);
   const refetch = useCallback(() => {
     refetchLocation();
   }, [refetchLocation]);
