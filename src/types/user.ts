@@ -137,6 +137,7 @@ export type IUserInfo = {
   locked: number;
   builtIn: number;
   loggerEnabled: number;
+  status: string;
 };
 export type IUserPreferences = {
   defaultLangCode: string;

@@ -71,8 +71,6 @@ export function UserListView() {
   });
   const { currentLang } = useLocales();
   const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
-
-  // Add this to get status options from API
   const { lookups: USER_STATUS_OPTIONS, lookupsLoading: USER_STATUSLoading } = useGetAllLookups(
     'USER_STATUS',
     currentLanguage
@@ -176,7 +174,12 @@ export function UserListView() {
                             'filled') ||
                           'soft'
                         }
-                        color={tab.text1 || 'default'}
+                        color={
+                          (tab.valueCode === '1' && 'success') ||
+                          (tab.valueCode === '2' && 'warning') ||
+                          (tab.valueCode === '3' && 'error') ||
+                          'default'
+                        }
                       >
                         {tab.valueName === 'All'
                           ? tableData.length

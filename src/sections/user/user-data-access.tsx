@@ -1,9 +1,9 @@
 import { t } from 'i18next';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+// Replace yupResolver with zodResolver
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { z } from 'zod';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
@@ -34,10 +34,12 @@ type Props = {
   approvedlocations: any;
   legalEntitiesLoading: any;
   legalEntities: any;
+  ledgers: any;
+  ledgersLoading: any;
   businessUnitesLoading: any;
   businessUnites: any;
-  ACCOUNT_TYPELoading: any;
-  ACCOUNT_TYPE: any;
+  accountsLoading: any;
+  accounts: any;
 };
 
 export interface UserDataAccessFormHandle {
@@ -55,10 +57,12 @@ const UserDataAccessForm = forwardRef<UserDataAccessFormHandle, Props>(
       approvedlocations,
       legalEntitiesLoading,
       legalEntities,
+      ledgers,
+      ledgersLoading,
       businessUnitesLoading,
       businessUnites,
-      ACCOUNT_TYPELoading,
-      ACCOUNT_TYPE,
+      accountsLoading,
+      accounts,
       approvedorganizations,
       approvedorganizationsLoading,
     },
@@ -76,8 +80,9 @@ const UserDataAccessForm = forwardRef<UserDataAccessFormHandle, Props>(
       {
         name: 'ledger',
         label: t('Ledger'),
-        options: [],
-        loading: false,
+        options:
+          ledgers?.map((ledger: any) => ({ id: ledger.ledgerId, name: ledger.ledgerName })) || [],
+        loading: ledgersLoading,
       },
       {
         name: 'legalEntity',
@@ -103,11 +108,11 @@ const UserDataAccessForm = forwardRef<UserDataAccessFormHandle, Props>(
         name: 'account',
         label: t('Account'),
         options:
-          ACCOUNT_TYPE?.map((account: any) => ({
-            id: Number(account.valueCode),
-            name: account.valueName,
+          accounts?.map((account: any) => ({
+            id: Number(account.accountId),
+            name: account.accountName,
           })) || [],
-        loading: ACCOUNT_TYPELoading,
+        loading: accountsLoading,
       },
     ];
     const locationsIds = useMemo(
@@ -134,71 +139,72 @@ const UserDataAccessForm = forwardRef<UserDataAccessFormHandle, Props>(
     const [personsData, setPersonsData] = useState<IPersonItem[]>([]);
     const [organizationsData, setOrganizationsData] = useState<IOrganizationsItem[]>([]);
     const conditionalValidation = (scopeField: string, fieldName: string) =>
-      z.array(z.any()).refine(
-        (value) => {
-          const scopeValue = methods.getValues(scopeField);
-          return scopeValue === 2 || scopeValue === 3 ? value.length > 0 : true;
-        },
-        {
-          message: `${fieldName} is required`,
+      z.array(z.any()).superRefine((value, ctx) => {
+        const scopeValue = methods.getValues(scopeField as any);
+        if ((scopeValue === 2 || scopeValue === 3) && value.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `${fieldName} is required`,
+          });
         }
-      );
-    const DataAccessSchema: any = z.object({
+      });
+    // Keep the rest of the DataAccessSchema the same
+    const DataAccessSchema = z.object({
       personScope: z.number(),
       personHierarchy: z.boolean().default(true),
-      person: z.array(z.any()).refine(
-        (value) => {
-          const { personScope, personHierarchy } = methods.getValues();
-          return (personScope === 2 || personScope === 3) && !personHierarchy
-            ? value.length > 0
-            : true;
-        },
-        {
-          message: 'Person is required',
+      person: z.array(z.any()).superRefine((value, ctx) => {
+        const { personScope, personHierarchy } = methods.getValues();
+        if ((personScope === 2 || personScope === 3) && !personHierarchy && value.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Person is required',
+          });
         }
-      ),
+      }),
       manager: z
         .any()
         .nullable()
-        .refine(
-          (value) => {
-            const { personScope, personHierarchy } = methods.getValues();
-            return (personScope === 2 || personScope === 3) && personHierarchy
-              ? value !== null
-              : true;
-          },
-          {
-            message: 'Manager is required',
+        .superRefine((value, ctx) => {
+          const { personScope, personHierarchy } = methods.getValues();
+          if ((personScope === 2 || personScope === 3) && personHierarchy && value === null) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Manager is required',
+            });
           }
-        ),
+        }),
       perTop: z.boolean(),
       organizationScope: z.number(),
       organizationHierarchy: z.boolean(),
-      organization: z.array(z.any()).refine(
-        (value) => {
-          const { organizationScope, organizationHierarchy } = methods.getValues();
-          return (organizationScope === 2 || organizationScope === 3) && !organizationHierarchy
-            ? value.length > 0
-            : true;
-        },
-        {
-          message: 'Organization is required',
+      organization: z.array(z.any()).superRefine((value, ctx) => {
+        const { organizationScope, organizationHierarchy } = methods.getValues();
+        if (
+          (organizationScope === 2 || organizationScope === 3) &&
+          !organizationHierarchy &&
+          value.length === 0
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Organization is required',
+          });
         }
-      ),
+      }),
       organizationManager: z
         .any()
         .nullable()
-        .refine(
-          (value) => {
-            const { organizationScope, organizationHierarchy } = methods.getValues();
-            return (organizationScope === 2 || organizationScope === 3) && organizationHierarchy
-              ? value !== null
-              : true;
-          },
-          {
-            message: 'Organization is required',
+        .superRefine((value, ctx) => {
+          const { organizationScope, organizationHierarchy } = methods.getValues();
+          if (
+            (organizationScope === 2 || organizationScope === 3) &&
+            organizationHierarchy &&
+            value === null
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Organization is required',
+            });
           }
-        ),
+        }),
       orgTop: z.boolean(),
       payrollScope: z.number(),
       payroll: conditionalValidation('payrollScope', 'Payroll'),
@@ -263,7 +269,7 @@ const UserDataAccessForm = forwardRef<UserDataAccessFormHandle, Props>(
       [currentUserDataAccess]
     );
     const methods = useForm({
-      resolver: yupResolver(DataAccessSchema),
+      resolver: zodResolver(DataAccessSchema),
       defaultValues,
     });
     const formData = () => {

@@ -154,7 +154,6 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
             }}
           >
             {renderAvatar()}
-
             <Typography variant="subtitle1" noWrap sx={{ mt: 2 }}>
               {user?.displayName}
             </Typography>
@@ -163,7 +162,6 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               {user?.email}
             </Typography>
           </Box>
-
           <Box
             sx={{
               p: 3,
@@ -173,7 +171,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               justifyContent: 'center',
             }}
           >
-            {Array.from({ length: 3 }, (_, index) => (
+            {/* {Array.from({ length: 3 }, (_, index) => (
               <Tooltip
                 key={_mock.fullName(index + 1)}
                 title={`Switch to: ${_mock.fullName(index + 1)}`}
@@ -184,9 +182,9 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
                   onClick={() => {}}
                 />
               </Tooltip>
-            ))}
+            ))} */}
 
-            <Tooltip title="Add account">
+            {/* <Tooltip title="Add account">
               <IconButton
                 sx={[
                   (theme) => ({
@@ -197,14 +195,14 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               >
                 <Iconify icon="mingcute:add-line" />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Box>
 
           {renderList()}
-
+          {/* 
           <Box sx={{ px: 2.5, py: 3 }}>
             <UpgradeBlock />
-          </Box>
+          </Box> */}
         </Scrollbar>
 
         <Box sx={{ p: 2.5 }}>

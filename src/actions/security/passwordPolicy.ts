@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { IPasswordPolicy } from 'src/types/password_policy';
 
-import axiosInstance, { fetcher, endpoints } from '../../utils/axios';
+import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
 
 // export function useGetPasswordPolicy(policyId:any){
 //     const res = axiosInstance.get(endpoints.resetPassword.getPasswordPolicy, policyId);
@@ -20,7 +20,7 @@ export function useGetPasswordPolicy(id: string) {
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({

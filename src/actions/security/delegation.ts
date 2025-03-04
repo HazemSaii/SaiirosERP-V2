@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
-import axiosInstance, { fetcher, endpoints } from 'src/utils/axios';
+import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
 
 import { IDelegationItem } from 'src/types/delegation';
 
@@ -15,7 +15,7 @@ export function useGetDelegations(currentLang: string) {
   const { data, isLoading, error, isValidating, mutate } = useSWR([URL, config], fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({
@@ -44,7 +44,7 @@ export function useGetDelegation(id: number) {
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   });
   const memoizedValue = useMemo(
     () => ({

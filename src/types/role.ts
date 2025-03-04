@@ -12,16 +12,9 @@ export type IRoleItem = {
   endDate: Date | null;
   builtIn: boolean;
   avatarUrl: string;
-<<<<<<< HEAD
   status: string;
   statusCode?: any;
   active?: string | number;
-=======
-  status: any;
-  statusCode?:any;
-  active?:string|number,
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
-
   lang: {
     EN: string;
     // AR: string;
@@ -56,30 +49,17 @@ export type IRoleFunctionInfo = {
   shortName: string;
   langCode: string;
   active: number;
-<<<<<<< HEAD
   functionName: string;
   accessType?: number;
   selected?: number;
 };
 
-=======
-  functionName:string;
-  accessType?:number;
-  selected?: number;
-  status: string ;
-};
 
 
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
 export type IRoleTableFilters = {
   roleName: string;
   active?: string;
-
-<<<<<<< HEAD
   status?: string;
-=======
-   status?: string;
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
 };
 
 export type IRoleFunctionTableFilters = {

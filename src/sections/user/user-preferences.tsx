@@ -1,13 +1,16 @@
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFormContext } from 'react-hook-form';
 import { useMemo, forwardRef, useImperativeHandle } from 'react';
+import { toast } from 'sonner';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 
 import { useLocales, useTranslate } from 'src/locales';
 
-import { toast } from 'src/components/snackbar';
-import { FormProvider, RHFCheckbox, RHFAutocomplete } from 'src/components/hook-form';
+import { FormProvider, RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
 
 import { IUserPreferences } from 'src/types/user';
 
@@ -23,6 +26,7 @@ type Props = {
   timeZones: any;
   languagesLoading: any;
   languages: any;
+  operation: any;
 };
 
 export interface UserPreferencesFormHandle {
@@ -40,11 +44,18 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
       timeZones,
       languagesLoading,
       languages,
+      operation,
     },
     ref
   ) => {
     const { currentLang } = useLocales();
-    const startPageIds = 1;
+    const pages = [
+      {
+        label: 'Dashboard',
+        code: 1,
+      },
+    ];
+    const startPageIds = useMemo(() => pages.map((p: any) => p.code), [pages]);
     const defaultDateFormatIds = useMemo(
       () => DEFAULT_DATE_FORMAT.map((p: any) => p.valueCode),
       [DEFAULT_DATE_FORMAT]
@@ -53,12 +64,12 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
     const languagesIds = useMemo(() => languages.map((p: any) => p.langCode), [languages]);
 
     const { t } = useTranslate();
-    const PreferencesSchema = Yup.object().shape({
-      defaultLangCode: Yup.string().required(t('Default Language is required')),
-      defaultTimezoneId: Yup.number().required(t('Default Time Zone is required')),
-      startPage: Yup.string().required(t('Starter Page is required')),
-      defaultDateFormat: Yup.string().required(t('Date Format is required')),
-      receiveEmail: Yup.boolean().required(t('Receive Email is required')),
+    const PreferencesSchema = z.object({
+      defaultLangCode: z.string().min(1, t('Default Language is required')),
+      defaultTimezoneId: z.number().min(1, t('Default Time Zone is required')),
+      startPage: z.number().min(1, t('Starter Page is required')),
+      defaultDateFormat: z.string().min(1, t('Date Format is required')),
+      receiveEmail: z.boolean(),
     });
 
     const defaultValues = useMemo(
@@ -85,7 +96,7 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
     );
 
     const methods = useForm({
-      resolver: yupResolver(PreferencesSchema),
+      resolver: zodResolver(PreferencesSchema),
       defaultValues,
     });
 
@@ -106,7 +117,7 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
       try {
         await new Promise((resolve) => setTimeout(resolve, 500));
         reset();
-        enqueueSnackbar(currentUserPreferences ? 'Update success!' : 'Create success!');
+        toast.success(currentUserPreferences ? 'Update success!' : 'Create success!');
         console.info('DATA', data);
       } catch (error) {
         console.error(error);
@@ -149,6 +160,7 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
         console.error(`Validation error on ${name}:`, error);
       }
     };
+    const isEdit = operation === 'edit';
 
     return (
       <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -168,7 +180,6 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   required
                   onBlur={() => validateFieldOnBlur('defaultLangCode')}
                   name="defaultLangCode"
-                  type="Lang"
                   label={t('Default Language')}
                   placeholder={t('Choose preferred language')}
                   options={
@@ -185,12 +196,12 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   isOptionEqualToValue={(option, value) =>
                     typeof option === 'string' ? option === value : option === value || value === ''
                   }
+                  disabled={isEdit}
                 />
                 <RHFAutocomplete
                   required
                   onBlur={() => validateFieldOnBlur('defaultTimezoneId')}
                   name="defaultTimezoneId"
-                  type="defaultTimezoneId"
                   label={t('Default Time Zone')}
                   placeholder={t('Choose preferred time zone')}
                   options={
@@ -205,13 +216,13 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   isOptionEqualToValue={(option, value) =>
                     value === null || value === undefined ? true : option === value
                   }
+                  disabled={isEdit}
                 />
 
                 <RHFAutocomplete
                   required
                   onBlur={() => validateFieldOnBlur('startPage')}
                   name="startPage"
-                  type="startPage"
                   label={t('Start Page')}
                   placeholder={t('Choose preferred start page')}
                   options={pages.map((option: any) => option.code)}
@@ -223,12 +234,12 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   isOptionEqualToValue={(option: any, value: any) =>
                     value === null || value === undefined ? true : option === value
                   }
+                  disabled={isEdit}
                 />
                 <RHFAutocomplete
                   required
                   onBlur={() => validateFieldOnBlur('defaultDateFormat')}
                   name="defaultDateFormat"
-                  type="DateFormat"
                   label={t('Date Format')}
                   placeholder={t('Choose preferred date format')}
                   options={
@@ -245,6 +256,7 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   isOptionEqualToValue={(option, value) =>
                     value === null || value === undefined ? true : option === value
                   }
+                  disabled={isEdit}
                 />
                 {/* <RHFAutocomplete
                   required
@@ -256,7 +268,7 @@ const UserPreferencesForm = forwardRef<UserPreferencesFormHandle, Props>(
                   defaultValue="dd-MM-yyyy"
                   getOptionLabel={(option) => option}
                 /> */}
-                <RHFCheckbox name="receiveEmail" label={t('Receive Emails')} />
+                <RHFCheckbox name="receiveEmail" label={t('Receive Emails')} disabled={isEdit} />
               </Box>
             </Card>
           </Grid>

@@ -17,7 +17,7 @@ import { useLocales } from 'src/locales';
 
 import FormSkeleton from 'src/components/Form/form-skelton';
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 
 type Props = {
   currentjobfamily?: IJobFamiliesInfo;

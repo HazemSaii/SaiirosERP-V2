@@ -127,12 +127,10 @@ export function DashboardLayout({
               }}
             />
           )}
-
           {/** @slot Divider */}
           {isNavHorizontal && (
             <VerticalDivider sx={{ [theme.breakpoints.up(layoutQuery)]: { display: 'flex' } }} />
           )}
-
           {/** @slot Workspace popover */}
         </>
       ),
@@ -179,11 +177,8 @@ export function DashboardLayout({
       }
     />
   );
-
   const renderFooter = () => null;
-
   const renderMain = () => <MainSection {...slotProps?.main}>{children}</MainSection>;
-
   return (
     <LayoutSection
       /** **************************************

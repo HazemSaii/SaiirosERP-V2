@@ -22,6 +22,14 @@ const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
 const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
 const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
 const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
+// Roles
+const RolesManagementPage = lazy(() => import('src/pages/dashboard/roles/management'));
+const RolesCreatePage = lazy(() => import('src/pages/dashboard/roles/create'));
+const RolesEditPage = lazy(() => import('src/pages/dashboard/roles/edit'));
+// Password Plolicy
+const PasswordPolicyManagementPage = lazy(
+  () => import('src/pages/dashboard/passwordPolicy/management')
+);
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -56,7 +64,22 @@ export const securityRoutes: RouteObject[] = [
           { path: ':id/edit', element: <UserEditPage /> },
         ],
       },
-
+      {
+        path: 'roles',
+        children: [
+          { element: <RolesManagementPage />, index: true },
+          { path: 'management', element: <RolesManagementPage /> },
+          { path: 'create', element: <RolesCreatePage /> },
+          { path: ':id/edit', element: <RolesEditPage /> },
+        ],
+      },
+      {
+        path: 'passwordPolicy',
+        children: [
+          { element: <PasswordPolicyManagementPage />, index: true },
+          { path: 'management', element: <PasswordPolicyManagementPage /> },
+        ],
+      },
     ],
   },
 ];

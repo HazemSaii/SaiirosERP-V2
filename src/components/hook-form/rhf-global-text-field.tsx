@@ -6,11 +6,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import {Iconify} from 'src/components/iconify';
+import { Iconify } from 'src/components/iconify';
 
 import { GlobalDialog } from '../custom-dialog';
-
-
 
 interface Props {
   name: string;
@@ -27,7 +25,7 @@ interface Props {
   [key: string]: any;
 }
 
-export default function RHFGlobalTextField({
+export function RHFGlobalTextField({
   name,
   fieldName,
   dialogTitle,
@@ -78,7 +76,7 @@ export default function RHFGlobalTextField({
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton edge="end" onClick={globalDialog.onTrue}>
-                  <Iconify icon="solar:global-outline" width={24} />
+                    <Iconify icon="solar:global-outline" width={24} />
                   </IconButton>
                 </InputAdornment>
               ),
@@ -103,7 +101,6 @@ export default function RHFGlobalTextField({
         multiline={multiline}
         validate={validate}
         required={required}
-        
       />
     </>
   );

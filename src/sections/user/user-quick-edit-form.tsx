@@ -72,7 +72,6 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
     mode: 'all',
     resolver: zodResolver(UserQuickEditSchema),
     defaultValues,
-    values: currentUser,
   });
 
   const {

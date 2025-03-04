@@ -18,10 +18,10 @@ type Props = {
   }[];
   cards: IPaymentCard[];
   addressBook: IAddressItem[];
-  invoices: IUserAccountBillingHistory[];
 };
 
-export function AccountBilling({ cards, plans, invoices, addressBook }: Props) {
+export function AccountBilling({ cards, plans, addressBook }: Props) {
+  const invoices: any = [];
   return (
     <Grid container spacing={5}>
       <Grid size={{ xs: 12, md: 8 }}>

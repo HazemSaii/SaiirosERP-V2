@@ -1,42 +1,33 @@
-<<<<<<< HEAD
 import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
-=======
-import type { DialogProps } from '@mui/material/Dialog';
-
-import { Stack } from '@mui/material';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
 import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-<<<<<<< HEAD
 import Dialog, { DialogProps } from '@mui/material/Dialog';
-=======
 
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
 import { useTranslate } from 'src/locales';
-
 
 // ----------------------------------------------------------------------
 
 type Props = DialogProps & {
   open: boolean;
   onClose: VoidFunction;
-  createdBy:any;
-  creationDate:any;
-  updateBy:any;
-  updateDate:any
+  createdBy: any;
+  creationDate: any;
+  updateBy: any;
+  updateDate: any;
 };
 
-export default function RecordInfoDialog({ open, onClose, createdBy,creationDate,updateBy,updateDate }: Props) {
+export default function RecordInfoDialog({
+  open,
+  onClose,
+  createdBy,
+  creationDate,
+  updateBy,
+  updateDate,
+}: Props) {
   const { t } = useTranslate();
-<<<<<<< HEAD
-=======
-
->>>>>>> ef06eecd7f698c8caed40f45f08fc4ef40cd116b
   return (
     <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
       <DialogTitle> {t('Record Info')} </DialogTitle>
@@ -52,7 +43,7 @@ export default function RecordInfoDialog({ open, onClose, createdBy,creationDate
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {t('Creation Date')}
             </Typography>
-            <Typography variant="subtitle1">{creationDate|| 'N/A'}</Typography>
+            <Typography variant="subtitle1">{creationDate || 'N/A'}</Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="space-between">
@@ -66,7 +57,7 @@ export default function RecordInfoDialog({ open, onClose, createdBy,creationDate
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {t('Last Update Date')}
             </Typography>
-            <Typography variant="subtitle1">{updateDate|| 'N/A'}</Typography>
+            <Typography variant="subtitle1">{updateDate || 'N/A'}</Typography>
           </Stack>
         </Stack>
       </DialogContent>

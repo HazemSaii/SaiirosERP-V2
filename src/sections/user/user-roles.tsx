@@ -44,7 +44,9 @@ export interface UserRolesFormHandle {
 const UserRols = forwardRef<UserRolesFormHandle, Props>(({ currentUserRoles, operation }, ref) => {
   const { t } = useTranslate();
   const { currentLang } = useLocales();
-  const { roles, rolesLoading } = useGetRoles(currentLang.value);
+  const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
+
+  const { roles, rolesLoading } = useGetRoles(currentLanguage);
   const [selectedIds, setSelectedIds] = useState<string[]>(() =>
     currentUserRoles ? currentUserRoles.map((role) => role.roleId) : []
   );

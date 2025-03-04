@@ -1,5 +1,4 @@
-import type {
-  DialogProps} from '@mui/material';
+import type { DialogProps } from '@mui/material';
 
 import { useMemo, useEffect } from 'react';
 import { useForm, Controller, FormProvider as RHFFormProvider } from 'react-hook-form';
@@ -21,7 +20,7 @@ import {
 
 import { useLocales, useTranslate } from 'src/locales';
 
-import {Scrollbar} from 'src/components/scrollbar';
+import { Scrollbar } from 'src/components/scrollbar';
 import { RHFTextField } from 'src/components/hook-form';
 import {
   useTable,
@@ -72,7 +71,7 @@ export default function GlobalDialog({
   const { t } = useTranslate();
   const table = useTable(); // ✅ Use updated useTable
 
-  const currentLanguage = currentLang.value; // 'EN' or 'AR'
+  const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
 
   const tableData = useMemo<ILanguageItem[]>(() => {
     const languages: ILanguageItem[] = [
@@ -116,14 +115,13 @@ export default function GlobalDialog({
     if (validate) {
       try {
         const isValid = await methods.trigger([name]); // ✅ Ensure proper validation trigger
-        return isValid;  // ✅ Returns a value
+        return isValid; // ✅ Returns a value
       } catch (error) {
         console.error(`Validation error on ${name}:`, error);
         return false; // ✅ Returns a value
       }
-    } 
+    }
   };
-  
 
   // Reset form on dialog close
   const handleClose = () => {
@@ -229,9 +227,7 @@ export default function GlobalDialog({
         <Button variant="outlined" color="inherit" onClick={handleClose}>
           {t('Close')}
         </Button>
-        <Button variant="contained" color="success" onClick={handleFormSubmit}
-                                              disabled={disabled}
->
+        <Button variant="contained" color="success" onClick={handleFormSubmit} disabled={disabled}>
           {t('Ok')}
         </Button>
       </DialogActions>

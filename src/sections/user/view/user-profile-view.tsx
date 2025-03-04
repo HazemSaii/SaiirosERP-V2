@@ -117,8 +117,6 @@ export function UserProfileView() {
         </Box>
       </Card>
 
-      {selectedTab === '' && <ProfileHome info={_userAbout} posts={_userFeeds} />}
-
       {selectedTab === 'followers' && <ProfileFollowers followers={_userFollowers} />}
 
       {selectedTab === 'friends' && (
@@ -128,8 +126,6 @@ export function UserProfileView() {
           onSearchFriends={handleSearchFriends}
         />
       )}
-
-      {selectedTab === 'gallery' && <ProfileGallery gallery={_userGallery} />}
     </DashboardContent>
   );
 }

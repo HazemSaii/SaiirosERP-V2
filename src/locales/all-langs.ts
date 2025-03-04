@@ -35,36 +35,6 @@ export const allLangs = [
     },
   },
   {
-    value: 'fr',
-    label: 'French',
-    countryCode: 'FR',
-    adapterLocale: 'fr',
-    numberFormat: { code: 'fr-Fr', currency: 'EUR' },
-    systemValue: {
-      components: { ...frFRCore.components, ...frFRDate.components, ...frFRDataGrid.components },
-    },
-  },
-  {
-    value: 'vi',
-    label: 'Vietnamese',
-    countryCode: 'VN',
-    adapterLocale: 'vi',
-    numberFormat: { code: 'vi-VN', currency: 'VND' },
-    systemValue: {
-      components: { ...viVNCore.components, ...viVNDate.components, ...viVNDataGrid.components },
-    },
-  },
-  {
-    value: 'cn',
-    label: 'Chinese',
-    countryCode: 'CN',
-    adapterLocale: 'zh-cn',
-    numberFormat: { code: 'zh-CN', currency: 'CNY' },
-    systemValue: {
-      components: { ...zhCNCore.components, ...zhCNDate.components, ...zhCNDataGrid.components },
-    },
-  },
-  {
     value: 'ar',
     label: 'Arabic',
     countryCode: 'SA',

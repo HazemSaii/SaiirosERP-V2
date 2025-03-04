@@ -34,9 +34,9 @@ export type ConfigValue = {
 // ----------------------------------------------------------------------
 
 export const CONFIG: ConfigValue = {
-  appName: 'Minimal UI',
+  appName: 'Saiiros',
   appVersion: packageJson.version,
-  serverUrl: 'https://api-dev.saiiros.com/dev/' ,
+  serverUrl: 'https://api-dev.saiiros.com/dev/',
   assetsDir: import.meta.env.VITE_ASSETS_DIR ?? '',
   /**
    * Auth
@@ -45,7 +45,7 @@ export const CONFIG: ConfigValue = {
   auth: {
     method: 'jwt',
     skip: false,
-    redirectPath: paths.dashboard.root,
+    redirectPath: paths.security.users.management,
   },
   /**
    * Mapbox

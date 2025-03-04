@@ -6,13 +6,12 @@ import Button from '@mui/material/Button';
 
 type Props = {
   label: string;
-  variant?: 'text' | 'outlined' | 'contained'; // Allow customization
-  size?: 'small' | 'medium' | 'large'; // Allow different sizes
-  sx?: object; // Allow custom styles
+  variant?: 'text' | 'outlined' | 'contained';
+  size?: 'small' | 'medium' | 'large';
+  sx?: object;
 };
 
-const BackButton = ({ label, variant='outlined' , size ,      sx={mt: 5 ,mr: 2 }
-}: Props) => {
+const BackButton = ({ label, variant = 'outlined', size, sx = { mt: 5, mr: 2 } }: Props) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
