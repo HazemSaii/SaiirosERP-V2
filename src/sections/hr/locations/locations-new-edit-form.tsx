@@ -16,12 +16,8 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-<<<<<<< HEAD
 import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
-=======
-import { RHFGlobalTextField } from 'src/components/hook-form/rhf-global-text-field';
->>>>>>> 8448db18a9ea97234abb6497e6ea582fc417b8c1
-import { RHFCheckbox, RHFTextField, RHFAutocomplete, schemaHelper } from 'src/components/hook-form';
+import { RHFCheckbox, RHFTextField, schemaHelper, RHFAutocomplete } from 'src/components/hook-form';
 
 type Props = {
   currentLocation?: ILocationsInfo;
