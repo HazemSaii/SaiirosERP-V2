@@ -1,7 +1,6 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
-
-import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
+import { fetcher, endpoints } from '../../lib/axios';
 
 export function useGetAllApplications(currentLang: string) {
   const config = {

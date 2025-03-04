@@ -20,7 +20,10 @@ export type IUserSocialLink = {
 };
 
 export type IUserProfileCover = {
+<<<<<<< HEAD
   // ?Hire Person dont need  name,role (For now)
+=======
+>>>>>>> 3ecc3e8d54e6a67eac275d24339e449149565081
   name?: string;
   role?: string;
   coverUrl: string;

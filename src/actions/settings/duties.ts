@@ -1,7 +1,11 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
+<<<<<<< HEAD
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
+=======
+import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
+>>>>>>> 3ecc3e8d54e6a67eac275d24339e449149565081
 
 export function useGetAllDuties(currentLang: string) {
   const config = {

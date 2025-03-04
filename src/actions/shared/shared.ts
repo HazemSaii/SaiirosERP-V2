@@ -33,7 +33,7 @@ export function useGetAllApplications(currentLang: string) {
   );
   return memoizedValue;
 }
-export function useGetAllCurrencies() {
+export function UseGetAllCurrencies() {
   const URL = endpoints.currencies.list;
   const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, swrOptions);
   const memoizedValue = useMemo(

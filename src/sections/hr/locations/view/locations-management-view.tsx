@@ -81,7 +81,8 @@ export default function LocationsManagementView() {
   // // const canReset = !isEqual(defaultFilters, filters);
   // const canReset =
   // !!defaultFilters.name || defaultFilters.role.length > 0 || defaultFilters.status !== 'all';
-  const canReset = filters.locationName !== '' || filters.approvalStatus !== 'All';
+  const canReset = !!filters.locationName  || filters.approvalStatus !== 'All';
+  
   useEffect(() => {
     if (!locationsLoading) {
       setTableData(locations || []);
@@ -89,8 +90,7 @@ export default function LocationsManagementView() {
       setTableData([]);
     }
   }, [locations, locationsLoading]);
-
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = ((!dataFiltered.length && canReset) || !dataFiltered.length)&&!locationsLoading;
 
   const handleFilters = useCallback(
     (name: string, value: ILocationFilterValue) => {
@@ -126,7 +126,7 @@ export default function LocationsManagementView() {
         }
       } catch (error) {
         setDeleteLoading(false);
-        toast.error(t('This record cannot be deleted'));
+        toast.info(t('This record cannot be deleted'));
       }
     },
     [dataInPage.length, t, table, tableData]
@@ -255,29 +255,33 @@ export default function LocationsManagementView() {
                   numSelected={table.selected.length}
                   onSort={table.onSort}
                 />
-                <TableBody>
-                  {locationsLoading && render_skelton}
+               <TableBody>
+  {locationsLoading ? (
+    render_skelton
+  ) : (
+    <>
+      {dataFiltered.length > 0 ? (
+        dataFiltered
+          .slice(
+            table.page * table.rowsPerPage,
+            table.page * table.rowsPerPage + table.rowsPerPage
+          )
+          .map((row) => (
+            <LocationTableRow
+              key={row.locationId.toString()}
+              row={row}
+              onDeleteRow={() => handleDeleteRow(row.locationId.toString())}
+              deleteLoading={deleteLoading}
+              onEditRow={() => handleEditRow(row.locationId)}
+            />
+          ))
+      ) : (
+        <TableNoData notFound={!locationsLoading && notFound} />
+      )}
+    </>
+  )}
+</TableBody>
 
-                  {dataFiltered
-                    .slice(
-                      table.page * table.rowsPerPage,
-                      table.page * table.rowsPerPage + table.rowsPerPage
-                    )
-                    .map((row) => (
-                      <LocationTableRow
-                        key={row.locationId.toString()}
-                        row={row}
-                        onDeleteRow={() => handleDeleteRow(row.locationId.toString())}
-                        deleteLoading={deleteLoading}
-                        onEditRow={() => handleEditRow(row.locationId)}
-                      />
-                    ))}
-                  <TableEmptyRows
-                    height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
-                  />
-                  {dataFiltered.length === 0 && <TableNoData notFound={notFound} />}
-                </TableBody>
               </Table>
             </Scrollbar>
           </TableContainer>

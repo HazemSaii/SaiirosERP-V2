@@ -144,12 +144,12 @@ export default function GlobalDialog({
                   <Scrollbar>
                     <Table size={table.dense ? 'small' : 'medium'}>
                       <TableHeadCustom
-                        order={table.order}
-                        orderBy={table.orderBy}
+                        // order={table.order}
+                        // orderBy={table.orderBy}
                         headCells={TABLE_HEAD}
                         rowCount={sortedTableData.length}
                         numSelected={table.selected.length}
-                        onSort={(columnId) => table.onSort(columnId)} // ✅ Sorting now works
+                        // onSort={(columnId) => table.onSort(columnId)} // ✅ Sorting now works
                       />
                       <TableBody>
                         {sortedTableData

@@ -2,7 +2,7 @@ import type { ILocationsItem } from 'src/types/locations';
 
 import { useBoolean, usePopover } from 'minimal-shared/hooks';
 
-import { Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
@@ -104,9 +104,14 @@ export default function LocationTableRow({ row, onEditRow, onDeleteRow, deleteLo
       title="Delete"
       content="Are you sure want to delete?"
       action={
-        <Button variant="contained" color="error" onClick={onDeleteRow}>
-          Delete
-        </Button>
+<LoadingButton
+            loading={deleteLoading}
+            color="error"
+            onClick={onDeleteRow}
+            variant="contained"
+          >   
+            {t('Delete')}
+            </LoadingButton>
       }
     />
   );

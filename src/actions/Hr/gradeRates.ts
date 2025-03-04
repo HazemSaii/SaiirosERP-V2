@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
-export function useGetGradeRates(currentLang: string) {
+export function UseGetGradeRates(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -27,7 +27,7 @@ export function useGetGradeRates(currentLang: string) {
   );
   return memoizedValue;
 }
-export function useGetApprovedGradeRates(currentLang: string) {
+export function UseGetApprovedGradeRates(currentLang: string) {
   const config = {
     headers: {
       Lang: currentLang.toUpperCase(),
@@ -57,7 +57,7 @@ export function UseAddGradeRates(data: any) {
   return res;
 }
 
-export function useGetGradeRate(id: number) {
+export function UseGetGradeRate(id: number) {
   const URL = id ? [endpoints.gradeRates.details, { params: { id } }] : '';
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
     revalidateIfStale: true,

@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-// import GradesManagementView from "src/sections/hr/grades/view/grades-management-view";
+import GradesManagementView from "src/sections/hr/grades/view/grades-management-view";
 
 export default function GradesManagementPage(){
     return(
@@ -8,7 +8,7 @@ export default function GradesManagementPage(){
          <Helmet>
         <title> Grades Management</title>
         </Helmet>
-        {/* <GradesManagementView/> */}
+        <GradesManagementView/>
         
         </>
     )

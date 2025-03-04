@@ -149,8 +149,8 @@ export function TablePaginationWithApi() {
         <TableBody>
           {isLoading ? (
             <TableSkeleton
-              rowCount={rowsPerPage}
-              cellCount={TABLE_HEAD.length}
+              // rowCount={rowsPerPage}
+              // cellCount={TABLE_HEAD.length}
               sx={{ height: 69 }}
             />
           ) : (

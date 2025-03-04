@@ -15,8 +15,9 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useLocales } from 'src/locales';
 
+import FieldSkeleton from 'src/components/Form/field-skelton';
 import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
-import { RHFCheckbox, RHFTextField, RHFAutocomplete } from 'src/components/hook-form';
+import { RHFCheckbox, RHFTextField, RHFAutocomplete, schemaHelper } from 'src/components/hook-form';
 
 type Props = {
   currentLocation?: ILocationsInfo;
@@ -36,7 +37,7 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
   ({ currentLocation, operation, countries, countriesLoading }, ref) => {
     const { currentLang } = useLocales();
     const currentLanguage = currentLang.value;
-    console.log('currentLanguage', currentLanguage);
+    console.log('currentLocation', currentLocation);
 
     const router = useRouter();
     const langSchema = z.object({
@@ -77,7 +78,7 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
 
     const NewApprovalSchema = z.object({
       locationName: langSchema, // approvalStatus: z.string().min(1, { message: t('Approval Status is required') }),
-      countryCode: z.string().min(1, { message: t('Country is required') }),
+      countryCode: schemaHelper.nullableInput(z.string().min(1, { message: t('Country is required') }),{message:t('Country is required')}),
       // city: z.string().min(1, { message: t('City is required') }),
       addressLine1: z.string().min(1, { message: t('Address Line 1 is required') }),
       addressLine2: z
@@ -165,26 +166,19 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
       }
     };
 
-    // const validateFieldOnBlur = async (name: any) => {
-    //   try {
-    //     return await trigger(name);
-    //   } catch (error) {
-    //     console.error(`Validation error on ${name}:`, error);
-    //     return false;
-    //   }
-    // };
-    const validateFieldOnBlur = useMemo(
-      () => async (name: string) => {
-        try {
-          return await trigger(name);
-        } catch (error) {
-          console.error(`Validation error on ${name}:`, error);
-          return false;
+    
+    const validateFieldOnBlur = async (name: string) => {
+      try {
+        const value = methods.getValues(name);
+        if (value === '') {
+          methods.setValue(name, null, { shouldValidate: true });
         }
-      },
-      [trigger]
-    );
-
+        return await trigger(name);
+      } catch (error) {
+        console.error(`Validation error on ${name}:`, error);
+        return false;
+      }
+    };
     const LocationName = currentLanguage === 'en' ? 'locationName.EN' : 'locationName.AR';
     console.log('LocationName', LocationName);
 
@@ -231,29 +225,35 @@ const LocationNewEditForm = forwardRef<LocationNewEditFormHandle, Props>(
                   />
                 </Box>
 
-                {/* Country Code - Stretches on large screens */}
-                <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 2', md: 'span 2' } }}>
-                  <RHFAutocomplete
-                    required
-                    name="countryCode"
-                    label={t('Country')}
-                    placeholder={t('Choose Country')}
-                    onBlur={() => validateFieldOnBlur('countryCode')}
-                    options={
-                      !countriesLoading ? countries.map((option: any) => option.countryCode) : []
-                    }
-                    getOptionLabel={(option) => {
-                      const selectedOption = !countriesLoading
-                        ? countries.find((item: any) => item.countryCode === option)
-                        : undefined;
-                      return selectedOption ? selectedOption.countryName : '';
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      value === null || value === undefined ? true : option === value
-                    }
-                    disabled={isPending}
-                  />
-                </Box>
+                
+<Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 2', md: 'span 2' } }}>
+{(!countriesLoading&&countries)?(             
+
+<RHFAutocomplete
+  required
+  name="countryCode"
+  label={t('Country')}
+  placeholder={t('Choose Country')}
+  onBlur={() => validateFieldOnBlur('countryCode')}
+  options={
+    !countriesLoading ? countries.map((option: any) => option.countryCode) : []
+  }
+  getOptionLabel={(option) => {
+    const selectedOption = !countriesLoading
+      ? countries.find((item: any) => item.countryCode === option)
+      : undefined;
+    return selectedOption ? selectedOption.countryName : '';
+  }}
+  isOptionEqualToValue={(option, value) =>
+    value === null || value === undefined ? true : option === value
+  }
+  disabled={isPending}
+/>
+):
+( <FieldSkeleton />)
+}
+</Box>
+               
 
                 {/* City - Adjusts based on screen size */}
                 <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 2', md: 'span 2' } }}>

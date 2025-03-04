@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
 
-// import { OrganizationsEditView } from 'src/sections/hr/organizations/view';
+import { OrganizationsEditView } from 'src/sections/hr/organizations/view';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ export default function OrganizationsEditPage() {
     <Helmet>
         <title> Organizations Edit</title>
       </Helmet>
-      {/* <OrganizationsEditView id={`${id}`}/> */}
+      <OrganizationsEditView id={`${id}`}/>
 
     </>
   );
