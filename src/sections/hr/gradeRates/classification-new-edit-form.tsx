@@ -56,43 +56,40 @@ const OganizationClassificationForm = forwardRef<OganizationClassificationFormHa
     const gradeRateType = currentGradeRates?.gradeRateType;
     const router = useRouter();
 
-
+const isEdit=operation==="edit"
     const GradeRateDetailSchema = z
   .object({
     detailId: z.union([z.string(), z.number()])
       .transform((val) => String(val))
       .optional(),
 
-    startDate: z.union([z.string(), z.date()])
-      .refine((val) => isPending || !!val, {
-        message: t("Start date is required"),
-      })
-      .transform((val) => (typeof val === "string" ? new Date(val) : val))
-      .optional(),
+      startDate: z
+      .preprocess(
+        (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
+        z.date({ required_error: t("Start date is required") }) // ✅ Start date is required
+          .refine(
+            (value) => isEdit || value >= new Date(), // If `isCreate`, must be today or later
+            { message: t("Start date must be today or later") }
+          )
+      ),
 
-    endDate: z.union([z.string(), z.date(), z.null()])
+      endDate: z
+      .union([z.string(), z.date(), z.null()])
       .nullable()
-      .transform((val) => (val ? new Date(val) : null))
-      .optional(),
-      // currencyCode: isPending || gradeRateUnit !== "Money"
-      // ? z.string().optional()
-      // : z.union([z.string().min(1, { message: t("Currency is required") }), z.null()]),
-    
-    // currencyCode: isPending || gradeRateUnit !== "Money"
-    //   ? z.string().optional()
-    //   : schemaHelper.nullableInput(z.string().min(1, { message: t("Currency is required") }),{message: t("Currency is required")}),
+      .transform((value) => (!value ? null : new Date(value))),
+
     currencyCode: isPending || gradeRateUnit !== "Money"
-    ? z.any()
-    : schemaHelper.nullableInput(
-      z.union([z.string(), z.number(), z.null()])
-        .transform((val) => (val === null ? "" : String(val)))
-        .refine((val) => val.trim().length > 0, {
-          message: t("Currency is required"),
-        }),{
-          message: t("Currency is required")}
-    )
-,
-      gradeRateValue: isPending || gradeRateType !== "VALUE"
+      ? z.any()
+      : schemaHelper.nullableInput(
+          z.union([z.string(), z.number(), z.null()])
+            .transform((val) => (val === null ? "" : String(val)))
+            .refine((val) => val.trim().length > 0, {
+              message: t("Currency is required"),
+            }),
+          { message: t("Currency is required") }
+        ),
+
+    gradeRateValue: isPending || gradeRateType !== "VALUE"
       ? z.union([z.string(), z.number(), z.null()])
           .transform((val) => (val === null ? "" : String(val)))
           .optional()
@@ -136,38 +133,18 @@ const OganizationClassificationForm = forwardRef<OganizationClassificationFormHa
       .transform((val) => Boolean(val))
       .optional(),
   })
-  .superRefine((data, ctx) => {
-    console.log("DEBUG: Full Data", data);
-
-    const { startDate, endDate } = data;
-
-    if (!startDate) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: t("Start date is required"),
-        path: ["startDate"],
-      });
-      return;
+  .refine(
+    (data) => {
+      if (!data.endDate || !data.startDate) return true; // ✅ Allow empty `endDate`
+      return data.endDate > data.startDate; // ✅ Only validate when `endDate` exists
+    },
+    {
+      message: t("End date must be later than start date"),
+      path: ["endDate"],
     }
+  );
 
-    if (endDate) {
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t("Invalid date format"),
-        });
-        return;
-      }
 
-      if (endDate <= startDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t("End date must be after Start date"),
-          path: ["endDate"],
-        });
-      }
-    }
-  });
 
 const NewOrganizationSchema = z.object({
   gradeRatesDetailsDTOS: z.array(GradeRateDetailSchema).optional(),
@@ -207,8 +184,8 @@ const NewOrganizationSchema = z.object({
     const handleAdd = () => {
       append({
         detailId: '',
-        startDate: undefined, // ✅ Use undefined instead of null
-        endDate: undefined,   // ✅ Keep endDate consistent
+        startDate:new Date() , // ✅ Use undefined instead of null
+        endDate: null,   // ✅ Keep endDate consistent
         currencyCode: gradeRateUnit === 'Money' ? '' : '',
         gradeRateValue: gradeRateType === 'VALUE' ? '' : undefined,
         gradeRateFrom: gradeRateType === 'RANGE' ? '' : undefined,

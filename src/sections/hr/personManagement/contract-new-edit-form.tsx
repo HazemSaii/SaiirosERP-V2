@@ -133,64 +133,59 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Normalize today's date to remove time
     
-    const NewContractSchema = ( )=>
-      z.object({
-        // startDate: !isNotChanged && (isFieldsEnabled || iscreate)
-        //   ? z.union([z.string(), z.date()])
-        //   .refine((val) => !!val, {
-        //     message: t("Start date is required"),
-        //   })
-        //   .transform((val) => (typeof val === "string" ? new Date(val) : val))
-        //   .optional()
-        //   : z.string().optional(), // Optional otherwise
-        //   endDate: !isNotChanged && (isFieldsEnabled || iscreate)
-        //   ? z.union([z.string(), z.date(), z.null()])
-        //   .nullable()
-        //   .transform((val) => (val ? new Date(val) : null))
-        //   .optional()
-        //   : z.string().optional(), // Optional otherwise
+    const NewContractSchema = () =>
+      z
+        .object({
+          startDate: !isNotChanged && (isFieldsEnabled || iscreate)
+            ? z
+                .preprocess(
+                  (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
+                  z.date().refine(
+                    (value) => !iscreate || value >= new Date(), // If `isCreate`, must be today or later
+                    { message: t("Start date must be today or later") }
+                  )
+                )
+            : z.date().optional(),
     
-        startDate: !isNotChanged && (isFieldsEnabled || iscreate)
-      ?z
-      .preprocess(
-        (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
-        z.date().refine(
-          (value) => !iscreate || value >= today, // If `isCreate`, must be today or later
-          { message: t("Start date must be today or later") }
-        )
-      )
-  : z.date().optional(),
-
-    endDate:!isNotChanged && (isFieldsEnabled || iscreate)
-    ?z.union([z.string(), z.date()])
-      .nullable()
-      .refine(
-        (value) => {
-          if (!value) return true; // Allow null/empty
-          return new Date(value) > new Date();
-        },
-        {
-          message: t("End Date must be later than Start Date"),
-          path: ["endDate"],
-        }
-      )
-      .optional(): z.date().optional(),
-        employmentType:isNotChanged || (!isFieldsEnabled && !iscreate)
-        ?z.union([z.string(), z.number(), z.null()])
-        .transform((val) => (val === null ? "" : String(val)))
-        .optional()
-        :schemaHelper.nullableInput( z.union([z.string(), z.number()])
-        .transform((val) => String(val))
-        .refine((val) => val.trim().length > 0, {
-          message: t("Employment Type is required"),
-        }), {
-          message: t("Employment Type is required"),
-        }),
-       
-        
-        probationEndDate: z.any().nullable(),
-        finalProcessDate: z.any().nullable(),
-      });
+          endDate: !isNotChanged && (isFieldsEnabled || iscreate)
+            ? z
+                .union([z.string(), z.date()])
+                .nullable()
+                .transform((value) => (typeof value === "string" ? new Date(value) : value)) // Ensure it's a Date
+            : z.date().optional(),
+    
+          employmentType:
+            isNotChanged || (!isFieldsEnabled && !iscreate)
+              ? z
+                  .union([z.string(), z.number(), z.null()])
+                  .transform((val) => (val === null ? "" : String(val)))
+                  .optional()
+              : schemaHelper.nullableInput(
+                  z
+                    .union([z.string(), z.number()])
+                    .transform((val) => String(val))
+                    .refine((val) => val.trim().length > 0, {
+                      message: t("Employment Type is required"),
+                    }),
+                  {
+                    message: t("Employment Type is required"),
+                  }
+                ),
+    
+          probationEndDate: z.any().nullable(),
+          finalProcessDate: z.any().nullable(),
+        })
+        .refine(
+          (data) => {
+            if (!data.endDate || !data.startDate) return true; // Allow empty values
+            return data.endDate > data.startDate;
+          },
+          {
+            message: t("End Date must be later than Start Date"),
+            path: ["endDate"],
+          }
+        );
+    
     
     
     
