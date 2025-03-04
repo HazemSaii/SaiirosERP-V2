@@ -30,6 +30,9 @@ const RolesEditPage = lazy(() => import('src/pages/dashboard/roles/edit'));
 const PasswordPolicyManagementPage = lazy(
   () => import('src/pages/dashboard/passwordPolicy/management')
 );
+const DelegationsManagementPage = lazy(() => import('src/pages/dashboard/delegations/management'));
+const DelegationsCreatePage = lazy(() => import('src/pages/dashboard/delegations/create'));
+const DelegationsEditPage = lazy(() => import('src/pages/dashboard/delegations/edit'));
 // ----------------------------------------------------------------------
 
 function SuspenseOutlet() {
@@ -71,6 +74,15 @@ export const securityRoutes: RouteObject[] = [
           { path: 'management', element: <RolesManagementPage /> },
           { path: 'create', element: <RolesCreatePage /> },
           { path: ':id/edit', element: <RolesEditPage /> },
+        ],
+      },
+      {
+        path: 'delegations',
+        children: [
+          { element: <DelegationsManagementPage />, index: true },
+          { path: 'management', element: <DelegationsManagementPage /> },
+          { path: 'create', element: <DelegationsCreatePage /> },
+          { path: ':id/edit', element: <DelegationsEditPage /> },
         ],
       },
       {

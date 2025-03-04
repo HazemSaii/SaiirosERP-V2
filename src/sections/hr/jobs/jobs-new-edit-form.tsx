@@ -15,13 +15,8 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
-import {
-  RHFCheckbox,
-  RHFTextField,
-  schemaHelper,
-  RHFAutocomplete,
-} from 'src/components/hook-form';
+import { RHFGlobalTextField } from 'src/components/hook-form/rhf-global-text-field';
+import { RHFCheckbox, RHFTextField, schemaHelper, RHFAutocomplete } from 'src/components/hook-form';
 
 type Props = {
   currentjobName?: IJobsInfo;
@@ -91,42 +86,47 @@ const JobsNewEditForm = forwardRef<JobsNewEditFormHandle, Props>(
           : z.string().optional(),
     });
 
-    
     const NewApprovalSchema = z.object({
       jobName: langSchema,
-      approvalStatus: z.string().min(1,{message:(t('Approval Status is required'))}),
+      approvalStatus: z.string().min(1, { message: t('Approval Status is required') }),
       jobFamily: schemaHelper.nullableInput(
-        z.union([z.string(), z.number(), z.null()]).refine(val => val !== null && String(val).trim() !== "", {
-          message: t("Job Family is required"),
-        })
+        z
+          .union([z.string(), z.number(), z.null()])
+          .refine((val) => val !== null && String(val).trim() !== '', {
+            message: t('Job Family is required'),
+          })
       ),
-            active: z.boolean().optional(), // Optional boolean value
-  });
+      active: z.boolean().optional(), // Optional boolean value
+    });
     const isPending = currentjobName?.approvalStatus === 'PENDING';
 
     const isEdit = operation === 'edit';
-    const jobFamilyIds = useMemo(() => 
-      jobFamiliesLoading ? [] : jobFamilies.map((family: any) => family.jobFamilyId), 
+    const jobFamilyIds = useMemo(
+      () => (jobFamiliesLoading ? [] : jobFamilies.map((family: any) => family.jobFamilyId)),
       [jobFamiliesLoading, jobFamilies]
     );
-    
+
     const defaultValues: any = useMemo(
       () => ({
         id: currentjobName?.id ?? 0,
         jobName: {
           AR:
             currentjobName?.jobTlDTO?.find((org) => org.langCode === 'AR')?.jobName ||
-            currentjobName?.jobName?.AR||'',
+            currentjobName?.jobName?.AR ||
+            '',
           EN:
             currentjobName?.jobTlDTO?.find((org) => org.langCode === 'EN')?.jobName ||
-            currentjobName?.jobName?.EN||'',
+            currentjobName?.jobName?.EN ||
+            '',
         },
         approvalStatus: currentjobName?.approvalStatus ?? 'DRAFT',
-        uniqueId:currentjobName?.uniqueId?? Math.floor(Math.random() * 1000000),
+        uniqueId: currentjobName?.uniqueId ?? Math.floor(Math.random() * 1000000),
 
         progressingJobId: currentjobName?.progressingJobId ?? '',
         active: currentjobName?.active === 1 || currentjobName?.active === undefined,
-        jobFamily: jobFamilyIds.includes(currentjobName?.jobFamily) ? currentjobName?.jobFamily : '',
+        jobFamily: jobFamilyIds.includes(currentjobName?.jobFamily)
+          ? currentjobName?.jobFamily
+          : '',
       }),
       [currentjobName]
     );
@@ -186,29 +186,27 @@ const JobsNewEditForm = forwardRef<JobsNewEditFormHandle, Props>(
       }
     };
 
-  
-
     const jobName = currentLanguage === 'en' ? 'jobName.EN' : 'jobName.AR';
 
     return (
       <FormProvider {...methods}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Card sx={{ p: { xs: 2, sm: 3 } }}>
-            <Box
-              display="grid"
-              gap={2}
-              sx={{
-                gridTemplateColumns: {
-                  xs: 'repeat(1, 1fr)', // 1 column on extra-small screens
-                  sm: 'repeat(2, 1fr)', // 2 columns on small screens
-                  md: 'repeat(4, 1fr)', // 3 columns on medium screens
-                  lg: 'repeat(4, 1fr)', // 4 columns on large screens
-                },
-              }}
-            >
-          <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 3' } }}>
-          <RHFGlobalTextField
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Card sx={{ p: { xs: 2, sm: 3 } }}>
+              <Box
+                display="grid"
+                gap={2}
+                sx={{
+                  gridTemplateColumns: {
+                    xs: 'repeat(1, 1fr)', // 1 column on extra-small screens
+                    sm: 'repeat(2, 1fr)', // 2 columns on small screens
+                    md: 'repeat(4, 1fr)', // 3 columns on medium screens
+                    lg: 'repeat(4, 1fr)', // 4 columns on large screens
+                  },
+                }}
+              >
+                <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 3' } }}>
+                  <RHFGlobalTextField
                     required
                     name={jobName}
                     label={t('Job Name')}
@@ -232,59 +230,57 @@ const JobsNewEditForm = forwardRef<JobsNewEditFormHandle, Props>(
                 </Box>
 
                 <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 2' } }}>
-                {(!jobFamiliesLoading&&jobFamilies)?(             
-                  <RHFAutocomplete
-                    required
-                    name="jobFamily"
-                    // type="jobFamily"
-                    label={t('Job Family Name')}
-                    placeholder={t('Job Family Name')}
-                    onBlur={() => validateFieldOnBlur('jobFamily')}
-                    options={
-                      !jobFamiliesLoading
-                        ? jobFamilies.map((option: any) => option.jobFamilyId)
-                        : []
-                    }
-                    getOptionLabel={(option) => {
-                      const selectedOption = !jobFamiliesLoading
-                        ? jobFamilies.find((item: any) => item.jobFamilyId === option)
-                        : undefined;
-                      return selectedOption ? selectedOption.jobFamilyName : '';
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      value === null || value === undefined ? true : option === value
-                    }
-                    disabled={isPending}
-                  />
-):
-( <FieldSkeleton />)
-}
+                  {!jobFamiliesLoading && jobFamilies ? (
+                    <RHFAutocomplete
+                      required
+                      name="jobFamily"
+                      // type="jobFamily"
+                      label={t('Job Family Name')}
+                      placeholder={t('Job Family Name')}
+                      onBlur={() => validateFieldOnBlur('jobFamily')}
+                      options={
+                        !jobFamiliesLoading
+                          ? jobFamilies.map((option: any) => option.jobFamilyId)
+                          : []
+                      }
+                      getOptionLabel={(option) => {
+                        const selectedOption = !jobFamiliesLoading
+                          ? jobFamilies.find((item: any) => item.jobFamilyId === option)
+                          : undefined;
+                        return selectedOption ? selectedOption.jobFamilyName : '';
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        value === null || value === undefined ? true : option === value
+                      }
+                      disabled={isPending}
+                    />
+                  ) : (
+                    <FieldSkeleton />
+                  )}
                 </Box>
                 <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 2' } }}>
-                {(!jobsLoading&&jobs)?(             
-
-                  <RHFAutocomplete
-                    
-                    name="progressingJobId"
-                    // type="progressingJobId"
-                    label={t('Progressing Job')}
-                    onBlur={() => validateFieldOnBlur('progressingJobId')}
-                    placeholder={t('Choose a Progressing Jobs')}
-                    options={!jobsLoading ? jobs.map((job: IJobsItem) => job.jobId) : []}
-                    getOptionLabel={(option) => {
-                      const selectedJob = !jobsLoading
-                        ? jobs.find((job: IJobsItem) => job.jobId === option)
-                        : undefined;
-                      return selectedJob ? selectedJob.jobName : '';
-                    }}
-                    isOptionEqualToValue={(option, value) =>
-                      value === null || value === undefined ? true : option === value
-                    }
-                    disabled={isPending}
-                  />
-                ):
-                ( <FieldSkeleton />)
-                }
+                  {!jobsLoading && jobs ? (
+                    <RHFAutocomplete
+                      name="progressingJobId"
+                      // type="progressingJobId"
+                      label={t('Progressing Job')}
+                      onBlur={() => validateFieldOnBlur('progressingJobId')}
+                      placeholder={t('Choose a Progressing Jobs')}
+                      options={!jobsLoading ? jobs.map((job: IJobsItem) => job.jobId) : []}
+                      getOptionLabel={(option) => {
+                        const selectedJob = !jobsLoading
+                          ? jobs.find((job: IJobsItem) => job.jobId === option)
+                          : undefined;
+                        return selectedJob ? selectedJob.jobName : '';
+                      }}
+                      isOptionEqualToValue={(option, value) =>
+                        value === null || value === undefined ? true : option === value
+                      }
+                      disabled={isPending}
+                    />
+                  ) : (
+                    <FieldSkeleton />
+                  )}
                 </Box>
 
                 <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 2' } }}>

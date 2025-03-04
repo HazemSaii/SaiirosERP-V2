@@ -14,10 +14,10 @@ import { formatDateTimeToISOString } from 'src/utils/general-utils';
 import { userDataAccess, userAdditionalData } from 'src/utils/user/user-additional-data';
 
 import { useLocales, useTranslate } from 'src/locales';
-import { useGetApprovedPersons } from 'src/actions/Hr/person';
+import { UseGetApprovedPersons } from 'src/actions/Hr/person';
 import { useGetApprovedLocations } from 'src/actions/Hr/locations';
 import { useGetAllLanguages } from 'src/actions/settings/languages';
-import { useGetApprovedOrganizations } from 'src/actions/Hr/organizations';
+import { UseGetApprovedOrganizations } from 'src/actions/Hr/organizations';
 import {
   useGetAllLookups,
   useGetAllTimezones,
@@ -91,7 +91,7 @@ export function UserEditView({ id }: Props) {
   const { userData, rolesData, dataAccessData, loading, refetch } = useFetchUserData(id);
   const { currentLang } = useLocales();
   const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
-  const { approvedpersons, approvedpersonsLoading } = useGetApprovedPersons(currentLanguage);
+  const { approvedpersons, approvedpersonsLoading } = UseGetApprovedPersons(currentLanguage);
   const { lookups: ACCOUNT_TYPE, lookupsLoading: ACCOUNT_TYPELoading } = useGetAllLookups(
     'ACCOUNT_TYPE',
     currentLanguage
@@ -104,7 +104,7 @@ export function UserEditView({ id }: Props) {
   const { accounts, accountsLoading } = useGetAllAccounts(currentLanguage);
   const { ledgers, ledgersLoading } = useGetAllLedgers(currentLanguage);
   const { approvedorganizations, approvedorganizationsLoading } =
-    useGetApprovedOrganizations(currentLanguage);
+    UseGetApprovedOrganizations(currentLanguage);
   const { approvedlocations, approvedlocationsLoading } = useGetApprovedLocations(currentLanguage);
   const { legalEntities, legalEntitiesLoading } = useGetAllLegalEnitites(currentLanguage);
   const { businessUnites, businessUnitesLoading } = useGetAllBusinessUnites(currentLanguage);

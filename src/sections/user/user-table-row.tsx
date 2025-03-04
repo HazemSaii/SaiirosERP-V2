@@ -14,6 +14,7 @@ import { useTranslate } from 'src/locales';
 import { Divider, ListItemText, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import RecordInfoDialog from 'src/components/record-info/record-info-dialog';
+import ResetPasswordDialog from './reset-password-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -128,7 +129,7 @@ export default function UserTableRow({ row, onEditRow, onDeleteRow, deleteLoadin
         onClose={recordInfo.onFalse}
       />
 
-      {/* <ResetPasswordDialog row={row} open={resetPassword.value} onClose={resetPassword.onFalse} /> */}
+      <ResetPasswordDialog row={row} open={resetPassword.value} onClose={resetPassword.onFalse} />
 
       <ConfirmDialog
         open={confirm.value}

@@ -14,7 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import FieldSkeleton from 'src/components/Form/field-skelton';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import {RHFGlobalTextField} from 'src/components/hook-form/rhf-global-text-field';
 import {
   RHFCheckbox,
   RHFTextField,

@@ -15,7 +15,7 @@ import { useRouter } from 'src/routes/hooks';
 import { useLocales } from 'src/locales';
 
 import { RHFCheckbox, RHFTextField } from 'src/components/hook-form';
-import RHFGlobalTextField from 'src/components/hook-form/rhf-global-text-field';
+import { RHFGlobalTextField } from 'src/components/hook-form/rhf-global-text-field';
 
 //---------------------------------------
 type Props = {
@@ -69,13 +69,12 @@ const GradesNewEditForm = forwardRef<GradesNewEditFormHandle, Props>(
               .nonempty({ message: t('Grade Name is required') })
           : z.string().optional(),
     });
-    
+
     const NewApprovalSchema = z.object({
       gradeName: isPending ? z.any().optional() : langSchema,
       // approvalStatus: Yup.string().required('Approval Status is required'),
       active: z.boolean(),
     });
-
 
     const defaultValues = useMemo(
       () => ({
@@ -83,13 +82,15 @@ const GradesNewEditForm = forwardRef<GradesNewEditFormHandle, Props>(
         gradeName: {
           AR:
             currentGrades?.gradeTlDTOS?.find((g) => g.langCode === 'AR')?.gradeName ||
-            currentGrades?.gradeName?.AR||'',
+            currentGrades?.gradeName?.AR ||
+            '',
           EN:
             currentGrades?.gradeTlDTOS?.find((g) => g.langCode === 'EN')?.gradeName ||
-            currentGrades?.gradeName?.EN||'',
+            currentGrades?.gradeName?.EN ||
+            '',
         },
         approvalStatus: currentGrades?.approvalStatus ?? 'DRAFT',
-        uniqueId:currentGrades?.uniqueId?? Math.floor(Math.random() * 1000000),
+        uniqueId: currentGrades?.uniqueId ?? Math.floor(Math.random() * 1000000),
 
         active: currentGrades?.active === 1 || currentGrades?.active === undefined,
       }),
@@ -152,8 +153,6 @@ const GradesNewEditForm = forwardRef<GradesNewEditFormHandle, Props>(
     };
     const gradeName = currentLanguage === 'en' ? 'gradeName.EN' : 'gradeName.AR';
 
-  
-
     return (
       <FormProvider {...methods}>
         <Grid container>
@@ -172,8 +171,8 @@ const GradesNewEditForm = forwardRef<GradesNewEditFormHandle, Props>(
                   },
                 }}
               >
-          <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 3' } }}>
-          <RHFGlobalTextField
+                <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 3' } }}>
+                  <RHFGlobalTextField
                     required
                     name={gradeName}
                     label={t('Grade Name')}
@@ -196,11 +195,10 @@ const GradesNewEditForm = forwardRef<GradesNewEditFormHandle, Props>(
                   />
                 </Box>
                 <Box sx={{ gridColumn: { xs: 'span 4', sm: 'span 1', md: 'span 2' } }}>
-
-                <Stack justifyContent="space-between" alignItems="center" direction="row">
-                  <RHFCheckbox name="active" label={t('Active')} disabled={isPending} />
-                </Stack>
-              </Box>
+                  <Stack justifyContent="space-between" alignItems="center" direction="row">
+                    <RHFCheckbox name="active" label={t('Active')} disabled={isPending} />
+                  </Stack>
+                </Box>
               </Box>
             </Card>
           </Grid>

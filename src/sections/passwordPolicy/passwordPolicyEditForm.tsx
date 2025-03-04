@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { forwardRef, useImperativeHandle } from 'react';
 import { toast } from 'src/components/snackbar';
@@ -8,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import { useTranslate } from 'src/locales';
 import { FormProvider, RHFCheckbox, RHFTextField } from 'src/components/hook-form';
 import { IPasswordPolicy } from 'src/types/password_policy';
-import * as z from 'zod';
+
 
 export interface PasswordEditFormHandle {
   submit: () => void;

@@ -14,11 +14,11 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import FormSkeleton from 'src/components/Form/form-skelton';
 import BackButton from 'src/components/buttons/back-button';
-import { useGetApprovedPersons } from 'src/actions/Hr/person';
+import { UseGetApprovedPersons } from 'src/actions/Hr/person';
 import { useGetApprovedLocations } from 'src/actions/Hr/locations';
 import { useGetAllLanguages } from 'src/actions/settings/languages';
 import { useAddUser, useValidateUser } from 'src/actions/security/user';
-import { useGetApprovedOrganizations } from 'src/actions/Hr/organizations';
+import { UseGetApprovedOrganizations } from 'src/actions/Hr/organizations';
 import {
   useGetAllLookups,
   useGetAllTimezones,
@@ -41,7 +41,7 @@ export function UserCreateView() {
   const { t } = useTranslate();
   const { currentLang } = useLocales();
   const currentLanguage = typeof currentLang === 'string' ? currentLang : currentLang.value;
-  const { approvedpersons, approvedpersonsLoading } = useGetApprovedPersons(currentLanguage);
+  const { approvedpersons, approvedpersonsLoading } = UseGetApprovedPersons(currentLanguage);
   const { lookups: ACCOUNT_TYPE, lookupsLoading: ACCOUNT_TYPELoading } = useGetAllLookups(
     'ACCOUNT_TYPE',
     currentLanguage
@@ -54,7 +54,7 @@ export function UserCreateView() {
   const { accounts, accountsLoading } = useGetAllAccounts(currentLanguage);
   const { ledgers, ledgersLoading } = useGetAllLedgers(currentLanguage);
   const { approvedorganizations, approvedorganizationsLoading } =
-    useGetApprovedOrganizations(currentLanguage);
+    UseGetApprovedOrganizations(currentLanguage);
   const { approvedlocations, approvedlocationsLoading } = useGetApprovedLocations(currentLanguage);
   const { legalEntities, legalEntitiesLoading } = useGetAllLegalEnitites(currentLanguage);
   const { businessUnites, businessUnitesLoading } = useGetAllBusinessUnites(currentLanguage);
