@@ -1,11 +1,6 @@
 import useSWR from 'swr';
 import { useMemo } from 'react';
-
-<<<<<<< HEAD
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
-=======
-import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
->>>>>>> 3ecc3e8d54e6a67eac275d24339e449149565081
 
 export function useGetAllLanguages(currentLang: string) {
   const config = {
@@ -27,11 +22,7 @@ export function useGetAllLanguages(currentLang: string) {
       languagesValidating: isValidating,
       refetch: () => mutate(),
     }),
-<<<<<<< HEAD
     [data?.content, error, isLoading, isValidating, mutate]
-=======
-    [data, error, isLoading, isValidating, mutate]
->>>>>>> 3ecc3e8d54e6a67eac275d24339e449149565081
   );
   return memoizedValue;
 }
@@ -71,4 +62,3 @@ export function UseEditLanguage(language: any) {
   const res = axiosInstance.post(endpoints.languages.edit, language);
   return res;
 }
-

@@ -1,19 +1,9 @@
-<<<<<<< HEAD
 import useSWR from 'swr';
 import { useMemo } from 'react';
 import axiosInstance, { fetcher, endpoints } from '../../lib/axios';
 import { IJobsItem } from 'src/types/jobs';
 import { ICountriesItem } from 'src/types/countries';
 import { ILOVItem } from 'src/types/Lov';
-=======
-import type { ILOVItem } from 'src/types/Lov';
-
-import useSWR from 'swr';
-import { useMemo } from 'react';
-
-import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
-
->>>>>>> 3ecc3e8d54e6a67eac275d24339e449149565081
 
 export function useGetDistinctLookup(currentLang:string) {
   const config = {

@@ -4,7 +4,7 @@ import packageJson from '../package.json';
 
 // ----------------------------------------------------------------------
 const BASE_API = 'https://api-dev.saiiros.com/dev/';
-
+//const BASE_API = 'https://api-test.saiiros.com/test/';
 export const IMAGE_BASE = `${BASE_API}images/persons/`;
 export type ConfigValue = {
   appName: string;
@@ -37,6 +37,8 @@ export const CONFIG: ConfigValue = {
   appName: 'Saiiros',
   appVersion: packageJson.version,
   serverUrl: 'https://api-dev.saiiros.com/dev/',
+  //serverUrl: 'https://api-test.saiiros.com/test/',
+
   assetsDir: import.meta.env.VITE_ASSETS_DIR ?? '',
   /**
    * Auth
