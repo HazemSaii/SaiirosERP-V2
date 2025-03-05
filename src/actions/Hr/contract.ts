@@ -3,6 +3,10 @@ import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
+export function UserenewContract(data: any) {
+  const res = axiosInstance.post(endpoints.contract.renewContract, data);
+  return res;
+}
 export function UseresignEmployee(data: any) {
   const res = axiosInstance.post(endpoints.contract.resignEmployee, data);
   return res;

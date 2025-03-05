@@ -261,6 +261,7 @@ export const endpoints = {
   contract: {
     terminateContract: '/contract/terminateContract',
     resignEmployee: '/contract/resignEmployee',
+    renewContract: '/contract/renewContract',
     updateContract: '/contract/updateContract',
     correctContract: '/contract/editContract',
     getContractsByPersonId: '/contract/getContractsByPersonId',

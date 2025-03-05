@@ -66,6 +66,7 @@ export default function ResignationDialog({
     approvalStatus: z.any().optional(), // Optional string
   });
   const { personId = '', contractId = '' } = row || {};
+  console.log("row2",row);
 
   const defaultValues = useMemo(
     () => ({

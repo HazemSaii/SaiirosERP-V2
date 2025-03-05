@@ -25,6 +25,7 @@ import {
   RHFAutocomplete,
 } from 'src/components/hook-form';
 
+import RenewDialog from './renew-dialog';
 import HistoryDialog from './history-dialog';
 import ResignationDialog from './resignation-dialog';
 
@@ -453,6 +454,18 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
                   open
                   onClose={handleCloseDialog}
                   title={t('History')}
+                />
+              )}
+              {openDialog === t('ReNew') && (
+                <RenewDialog
+                  row={currentContract}
+                  open
+                  onClose={handleCloseDialog}
+                  title={t('ReNew')}
+                  TIME_UNITSLoading={TIME_UNITSLoading}
+                  TIME_UNITS_Types={TIME_UNITS_Types}
+                  EMPLOYMENT_TYPE={EMPLOYMENT_TYPE}
+                  EMPLOYMENT_TYPELoading={EMPLOYMENT_TYPELoading}
                 />
               )}
               {/* Submit button */}
