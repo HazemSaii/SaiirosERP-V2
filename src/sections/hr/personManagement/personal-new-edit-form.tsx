@@ -95,12 +95,14 @@ const emailValidation = () => {
   const shouldValidate = !isNotChanged && (isFieldsEnabled || iscreate);
 
   return shouldValidate
-    ? z
-        .string()
-        .trim()
-        .email({ message: t("Invalid email format") }) // ✅ Validate email format
-        .or(z.literal("")) // ✅ Allow empty string
-        .nullable() // ✅ Allow null
+    ? schemaHelper.nullableInput(z.string()).superRefine((value, ctx) => {
+          if (value && !/^[^\s@]+@[^\s@]{2,}\.[^\s@]{2,}$/.test(value)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('Email must be a valid email address.'),
+            });
+          }
+        })// ✅ Allow null
     : z.string().optional();
 };
 

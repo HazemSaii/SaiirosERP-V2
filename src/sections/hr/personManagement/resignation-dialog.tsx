@@ -57,7 +57,11 @@ export default function ResignationDialog({
 
     notes: z.any().optional(), // Optional string
 
-    finalProcessDate: schemaHelper.nullableInput(z.date()), // Uses schemaHelper for nullable date
+    finalProcessDate: z.union([z.string(), z.date()]).nullable()
+    .transform((value) =>
+      typeof value === "string" ? new Date(value) : value
+    ), // ✅ Make sure it's a Date
+// Uses schemaHelper for nullable date
 
     approvalStatus: z.any().optional(), // Optional string
   });

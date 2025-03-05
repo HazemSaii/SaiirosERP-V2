@@ -55,23 +55,27 @@ const OganizationClassificationForm = forwardRef<OganizationClassificationFormHa
     const gradeRateUnit = currentGradeRates?.gradeRateUnit;
     const gradeRateType = currentGradeRates?.gradeRateType;
     const router = useRouter();
-
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today's date to remove time
 const isEdit=operation==="edit"
     const GradeRateDetailSchema = z
   .object({
     detailId: z.union([z.string(), z.number()])
       .transform((val) => String(val))
       .optional(),
-
-      startDate: z
-      .preprocess(
-        (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
-        z.date({ required_error: t("Start date is required") }) // ✅ Start date is required
-          .refine(
-            (value) => isEdit || value >= new Date(), // If `isCreate`, must be today or later
-            { message: t("Start date must be today or later") }
-          )
-      ),
+// if Null show t("Start date is required")
+startDate: z
+.preprocess(
+  (val) => {
+    if (!val) return undefined; // ✅ Ensure null/undefined triggers required_error
+    return typeof val === "string" ? new Date(val) : val; // Convert string to Date
+  },
+  z.date({ required_error: t("Start date is required") }) // ✅ Show required error when null
+    .refine(
+      (value) => isEdit || value >= today, // If `isCreate`, must be today or later
+      { message: t("Start date must be today or later") }
+    )
+),
 
       endDate: z
       .union([z.string(), z.date(), z.null()])

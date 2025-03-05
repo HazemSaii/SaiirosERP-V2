@@ -137,22 +137,27 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
       z
         .object({
           startDate: !isNotChanged && (isFieldsEnabled || iscreate)
-            ? z
-                .preprocess(
-                  (val) => (typeof val === "string" ? new Date(val) : val), // Convert string to Date
-                  z.date().refine(
-                    (value) => !iscreate || value >= new Date(), // If `isCreate`, must be today or later
+            ? z.preprocess(
+                (val) => {
+                  if (!val) return undefined; // ✅ Ensure null/undefined triggers required_error
+                  return typeof val === "string" ? new Date(val) : val; // Convert string to Date
+                },
+                z.date({ required_error: t("Start date is required") }) // ✅ Show required error when null
+                  .refine(
+                    (value) => !iscreate || value >= today, // If `isCreate`, must be today or later
                     { message: t("Start date must be today or later") }
                   )
-                )
-            : z.date().optional(),
+              )
+            : z.any().optional(),
     
           endDate: !isNotChanged && (isFieldsEnabled || iscreate)
             ? z
                 .union([z.string(), z.date()])
                 .nullable()
-                .transform((value) => (typeof value === "string" ? new Date(value) : value)) // Ensure it's a Date
-            : z.date().optional(),
+                .transform((value) =>
+                  typeof value === "string" ? new Date(value) : value
+                ) // Ensure it's a Date
+            : z.any().optional(),
     
           employmentType:
             isNotChanged || (!isFieldsEnabled && !iscreate)
@@ -172,19 +177,55 @@ const ContractNewEditForm = forwardRef<ContractNewEditFormHandle, Props>(
                   }
                 ),
     
-          probationEndDate: z.any().nullable(),
-          finalProcessDate: z.any().nullable(),
+          probationEndDate: z.union([z.string(), z.date()]).nullable()
+            .transform((value) =>
+              typeof value === "string" ? new Date(value) : value
+            ), // ✅ Make sure it's a Date
+    
+          finalProcessDate: z.union([z.string(), z.date()]).nullable()
+            .transform((value) =>
+              typeof value === "string" ? new Date(value) : value
+            ), // ✅ Make sure it's a Date
         })
-        .refine(
-          (data) => {
-            if (!data.endDate || !data.startDate) return true; // Allow empty values
-            return data.endDate > data.startDate;
-          },
-          {
-            message: t("End Date must be later than Start Date"),
-            path: ["endDate"],
+        .superRefine((data, ctx) => {
+          if (!isNotChanged && (isFieldsEnabled || iscreate)) {
+            // ✅ Validate endDate
+            if (data.endDate && data.startDate && data.endDate <= data.startDate) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: t("End Date must be later than Start Date"),
+                path: ["endDate"],
+              });
+            }
+    
+            // ✅ Validate probationEndDate
+            if (
+              data.probationEndDate &&
+              data.startDate &&
+              data.probationEndDate <= data.startDate
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: t("Probation End Date must be later than Start Date"),
+                path: ["probationEndDate"],
+              });
+            }
+    
+            // ✅ Validate finalProcessDate
+            if (
+              data.finalProcessDate &&
+              data.startDate &&
+              data.finalProcessDate <= data.startDate
+            ) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: t("Final Process Date must be later than Start Date"),
+                path: ["finalProcessDate"],
+              });
+            }
           }
-        );
+        });
+    
     
     
     

@@ -115,7 +115,7 @@ export default function PersonManagementView() {
     { id: 'employeeNumber', label: t('Employee Number'),width: 250 },
     { id: 'depatment', label: t('Department'), width: 250 },
     { id: 'position', label: t('Position'),width: 250 },
-    { id: 'active', label: t('status'),width: 250 },
+    { id: 'approvalStatus', label: t('status'),width: 250 },
     { id: '', width: 10 },
   ];
   

@@ -119,19 +119,50 @@ export default function FamilyDialog({ row, open,title, onClose,  MARITAL_STATUS
       message: t('Person ID is required'),
     }),
     relationshipType: schemaHelper.nullableInput(z.any()),
-    approvalStatus: z.string().min(1, t('Approval Status is required')),
-    firstName: z.string().min(1, t('First Name is required')),
+    // approvalStatus: z.string().min(1, t('Approval Status is required')),
+    firstName: z.union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim().length > 0, {
+      message: t("First Name is required"),
+    }).refine((val) => val.trim().length > 2, {
+      message: t("InValid First Name"),
+    }),
     secondName: schemaHelper.nullableInput(z.string()),
     thirdName: schemaHelper.nullableInput(z.string()),
-    lastName: z.string().min(1, t('Last Name is required')),
+    lastName: z.union([z.string(), z.number()])
+      .transform((val) => String(val))
+      .refine((val) => val.trim().length > 0, {
+        message: t("Last Name is required"),
+      })
+      .refine((val) => val.trim().length > 2, {
+        message: t("InValid Last Name"),
+      }),
     alternativeFirstName: schemaHelper.nullableInput(z.string()),
     alternativeSecondName: schemaHelper.nullableInput(z.string()),
     alternativeThirdName: schemaHelper.nullableInput(z.string()),
     alternativeLastName: schemaHelper.nullableInput(z.string()),
-    dateOfBirth: schemaHelper.nullableInput(z.date()),
-    age: schemaHelper.nullableInput(z.string()),
+    dateOfBirth: z
+    .union([z.string(), z.date(), z.null()])
+    .nullable()
+    .transform((val) => (typeof val === "string" ? new Date(val) : val)) // Convert string to Date
+    .refine(
+      (date) => !date || date <= new Date(), // ✅ Must be in the past if provided
+      { message: t("Date of Birth cannot be in the future") }
+    )
+    .refine(
+      (date) => !date || date >= new Date(new Date().setFullYear(new Date().getFullYear() - 120)), // ✅ Not older than 120 years
+      { message: t("Please enter a valid Date of Birth") }
+    )
+   ,
+    // age: schemaHelper.nullableInput(z.string()),
     maritalStatus: schemaHelper.nullableInput(z.string()),
-    gender: z.string().min(1, t('Gender is required')),
+    gender:schemaHelper.nullableInput( z.union([z.string(), z.number()])
+      .transform((val) => String(val))
+      .refine((val) => val.trim().length > 0, {
+        message: t("Gender is required"),
+      }), {
+        message: t("Gender is required"),
+      }),
     religion: schemaHelper.nullableInput(z.string()),
     nationalityCode: schemaHelper.nullableInput(z.string()),
     registeredDisabled: schemaHelper.nullableInput(z.boolean()),

@@ -200,41 +200,35 @@ const EmploymentNewEditForm = forwardRef<EmploymentNewEditFormHandle, Props>(
     //   // locationId: Yup.string(),
     //   // payroll: Yup.string(),
     //   // managerId: Yup.string(),
-    // });
+    // });const today = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const NewContractSchema = z.object({
-      startDate: z
-        .union([z.date(), z.string().transform((val) => new Date(val))])
-        .superRefine((date, ctx) => {
-          if (!(isNotChanged || (!isFieldsEnabled && !iscreate)) && !date) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: t('Start date is required'),
-            });
-          }
+        startDate: !isNotChanged && (isFieldsEnabled || iscreate)
+                  ? z
+                  .preprocess(
+                    (val) => {
+                      if (!val) return undefined; // ✅ Ensure null/undefined triggers required_error
+                      return typeof val === "string" ? new Date(val) : val; // Convert string to Date
+                    },
+                    z.date({ required_error: t("Start date is required") }) // ✅ Show required error when null
+                      .refine(
+                        (value) => !iscreate  || value >= today, // If `isCreate`, must be today or later
+                        { message: t("Start date must be today or later") }
+                      )
+                  )
+                  : z.any().optional(),
+          
+                endDate: !isNotChanged && (isFieldsEnabled || iscreate)
+                  ? z
+                      .union([z.string(), z.date()])
+                      .nullable()
+                      .transform((value) => (typeof value === "string" ? new Date(value) : value)) // Ensure it's a Date
+                  : z.any().optional(),
+      
     
-          if (iscreate && date && new Date(date) < new Date(new Date().setHours(0, 0, 0, 0))) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: t('Start date must be today or later'),
-            });
-          }
-        }), 
-    
-      // endDate: schemaHelper.nullableInput(z.date()).superRefine((date, ctx) => {
-      //   if (
-      //     !(isNotChanged || (!isFieldsEnabled && !iscreate)) &&
-      //     date &&
-      //     ctx.parent.startDate &&
-      //     new Date(date) <= new Date(ctx.parent.startDate)
-      //   ) {
-      //     ctx.addIssue({
-      //       code: z.ZodIssueCode.custom,
-      //       message: t('End Date must be later than Start Date'),
-      //     });
-      //   }
-      // }),
-    
-      gender:isNotChanged || (!isFieldsEnabled && !iscreate)
+      actionCode:isNotChanged || (!isFieldsEnabled && !iscreate)
       ?z.union([z.string(), z.number(), z.null()])
       .transform((val) => (val === null ? "" : String(val)))
       .optional()
@@ -247,7 +241,17 @@ const EmploymentNewEditForm = forwardRef<EmploymentNewEditFormHandle, Props>(
       }),
     
      
-    })
+    }).superRefine((data, ctx) => {
+      if (!isNotChanged && (isFieldsEnabled || iscreate)) {
+        if (data.endDate && data.startDate && data.endDate <= data.startDate) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t("End Date must be later than Start Date"),
+            path: ["endDate"],
+          });
+        }
+      }
+    });
     const defaultValues: any = useMemo(
       () => ({
         startDate: currentEmployment?.startDate
